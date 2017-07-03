@@ -25,6 +25,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
 	"runtime"
 	"strconv"
@@ -641,6 +642,68 @@ func (web *webAPIHandlers) DownloadZip(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 		}
+	}
+}
+
+// Creates a thumbnail image for an object and responds with it.
+func (web *webAPIHandlers) Thumbnail(w http.ResponseWriter, r *http.Request) {
+	objectAPI := web.ObjectAPI()
+	if objectAPI == nil {
+		writeWebErrorResponse(w, errServerNotInitialized)
+		return
+	}
+
+	vars := mux.Vars(r)
+	bucket := vars["bucket"]
+	object := vars["object"]
+	token := r.URL.Query().Get("token")
+
+	if !isAuthTokenValid(token) && !isBucketActionAllowed("s3:GetObject", bucket, object) {
+		writeWebErrorResponse(w, errAuthentication)
+		return
+	}
+
+	// Lock the object before reading.
+	objectLock := globalNSMutex.NewNSLock(bucket, object)
+	objectLock.RLock()
+	defer objectLock.RUnlock()
+
+	// Open up the `nailedit` command, which will write to the response.
+	cmd := exec.Command("nailedit")
+	cmdIn, err := cmd.StdinPipe()
+	if err != nil {
+		writeWebErrorResponse(w, err)
+		return
+	}
+	defer cmdIn.Close()
+
+	// Output thumbnail will always be a JPEG.
+	w.Header().Set("Content-Type", "image/jpeg")
+	// Cache output for 8 hours (60 * 60 * 8).
+	w.Header().Set("Cache-Control", "private, max-age=28800")
+
+	// Pipe the `nailedit` thumbnail to the writer.
+	cmd.Stdout = w
+
+	err = cmd.Start()
+	if err != nil {
+		writeWebErrorResponse(w, err)
+		return
+	}
+
+	// Pipe the object into the `nailedit` command.
+	err = objectAPI.GetObject(bucket, object, 0, -1, cmdIn)
+	if err != nil {
+		writeWebErrorResponse(w, err)
+		return
+	}
+	cmdIn.Close()
+
+	// Bad errors start to occur if we don't wait for the command.
+	err = cmd.Wait()
+	if err != nil {
+		writeWebErrorResponse(w, err)
+		return
 	}
 }
 
