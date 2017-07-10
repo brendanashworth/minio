@@ -18,6 +18,8 @@ getdeps: checks
 	@echo "Installing deadcode" && go get -u github.com/remyoudompheng/go-misc/deadcode
 	@echo "Installing misspell" && go get -u github.com/client9/misspell/cmd/misspell
 	@echo "Installing ineffassign" && go get -u github.com/gordonklaus/ineffassign
+	# TODO. Ship nailedit under minio not brendanashworth.
+	@echo "Installing nailedit" && go get -u github.com/brendanashworth/nailedit
 
 verifiers: vet fmt lint cyclo spelling
 
