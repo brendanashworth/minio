@@ -20,10 +20,13 @@ import (
 	"archive/zip"
 	"bytes"
 	"crypto/md5"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"image"
+	_ "image/jpeg"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -919,6 +922,78 @@ func testWebHandlerDownloadZip(obj ObjectLayer, instanceType string, t TestErrHa
 	// Verify the md5 of the response.
 	if hex.EncodeToString(h.Sum(nil)) != "ac7196449b14bea42775d29e8bb29f50" {
 		t.Fatal("Incorrect zip contents")
+	}
+}
+
+func TestWebHandlerThumbnail(t *testing.T) {
+	ExecObjectLayerTest(t, testThumbnailWebHandler)
+}
+
+func testThumbnailWebHandler(obj ObjectLayer, instanceType string, t TestErrHandler) {
+	apiRouter := initTestWebRPCEndPoint(obj)
+
+	// Get a token to use.
+	credentials := serverConfig.GetCredential()
+	token, err := getWebRPCToken(apiRouter, credentials.AccessKey, credentials.SecretKey)
+	if err != nil {
+		t.Fatal("Cannot authenticate")
+	}
+
+	bucketName := getRandomBucketName()
+	objectName := "image.jpg"
+
+	test := func(object string) (int, *bytes.Buffer) {
+		path := "/minio/thumbnail/" + bucketName + "/" + object + "?token=" + token
+
+		req, reqErr := http.NewRequest("GET", path, nil)
+		if reqErr != nil {
+			t.Fatalf("Cannot create upload request, %v", reqErr)
+		}
+
+		rec := httptest.NewRecorder()
+
+		apiRouter.ServeHTTP(rec, req)
+
+		return rec.Code, rec.Body
+	}
+
+	// Create bucket.
+	err = obj.MakeBucketWithLocation(bucketName, "")
+	if err != nil {
+		t.Fatalf("failed to create bucket %s (on %s)", err.Error(), instanceType)
+	}
+
+	// This is the smallest possible PNG image ever, base64-encoded.
+	content, err := base64.StdEncoding.DecodeString("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==")
+	if err != nil {
+		t.Fatalf("failed to decode png, %s", err.Error())
+	}
+
+	_, err = obj.PutObject(bucketName, objectName, int64(len(content)), bytes.NewReader(content), nil, "")
+	if err != nil {
+		t.Fatalf("failed to upload image, %s", err.Error())
+	}
+
+	// Try to download the thumbnail.
+	code, bodyContent := test(objectName)
+
+	if code != http.StatusOK {
+		t.Errorf("Expected the response status to be 200, but instead found `%d`", code)
+	}
+
+	_, format, err := image.Decode(bodyContent)
+	if err != nil {
+		t.Errorf("failed decoding image thumbnail, %s", err.Error())
+	}
+	if format != "jpeg" {
+		t.Errorf("did not get correct format (jpeg), got %s", format)
+	}
+
+	// It should give a 404 for no image.
+	code, _ = test("no.image.here")
+
+	if code != http.StatusNotFound {
+		t.Errorf("expected response to be 404, got %d", code)
 	}
 }
 
