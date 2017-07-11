@@ -997,6 +997,67 @@ func testThumbnailWebHandler(obj ObjectLayer, instanceType string, t TestErrHand
 	}
 }
 
+func BenchmarkWebHandlerThumbnail(b *testing.B) {
+	// Initiate the minio filesystem.
+	rootPath, err := newTestConfig(globalMinioDefaultRegion)
+	if err != nil {
+		b.Fatal("Unexpected error", err)
+	}
+	defer removeAll(rootPath)
+
+	obj, fsDir, err := prepareFS()
+	if err != nil {
+		b.Fatalf("Initialization of object layer failed for single node setup: %s", err)
+	}
+	defer removeAll(fsDir)
+
+	apiRouter := initTestWebRPCEndPoint(obj)
+
+	// Get a token to use.
+	credentials := serverConfig.GetCredential()
+	token, err := getWebRPCToken(apiRouter, credentials.AccessKey, credentials.SecretKey)
+	if err != nil {
+		b.Fatal("Cannot authenticate")
+	}
+
+	bucketName := getRandomBucketName()
+	objectName := "image.jpg"
+
+	// Create bucket.
+	err = obj.MakeBucketWithLocation(bucketName, "")
+	if err != nil {
+		b.Fatalf("failed to create bucket %s", err.Error())
+	}
+
+	// This is the smallest possible PNG image ever, base64-encoded.
+	content, err := base64.StdEncoding.DecodeString("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==")
+	if err != nil {
+		b.Fatalf("failed to decode png, %s", err.Error())
+	}
+
+	_, err = obj.PutObject(bucketName, objectName, int64(len(content)), bytes.NewReader(content), nil, "")
+	if err != nil {
+		b.Fatalf("failed to upload image, %s", err.Error())
+	}
+
+	path := "/minio/thumbnail/" + bucketName + "/" + objectName + "?token=" + token
+
+	// After the initialization, reset the timer to zero.
+	b.ResetTimer()
+
+	// Loop over the thumbnail request.
+	for i := 0; i < b.N; i++ {
+		rec := httptest.NewRecorder()
+
+		req, err := http.NewRequest("GET", path, nil)
+		if err != nil {
+			b.Fatalf("Cannot create upload request, %v", err)
+		}
+
+		apiRouter.ServeHTTP(rec, req)
+	}
+}
+
 // Wrapper for calling PresignedGet handler
 func TestWebHandlerPresignedGetHandler(t *testing.T) {
 	ExecObjectLayerTest(t, testWebPresignedGetHandler)
