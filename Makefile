@@ -19,7 +19,22 @@ getdeps: checks
 	@echo "Installing misspell" && go get -u github.com/client9/misspell/cmd/misspell
 	@echo "Installing ineffassign" && go get -u github.com/gordonklaus/ineffassign
 	# TODO. Ship nailedit under minio not brendanashworth.
-	@echo "Installing nailedit" && go get -u github.com/brendanashworth/nailedit
+	#@echo "Installing nailedit" && go get -u github.com/brendanashworth/nailedit
+	PLUGINS.
+	ab wants a plugin model that will allow someone to dynamically address new file formats
+	and whatnot. e.g. minio plugin install pdf. "minio pluggable backend". he likes the approach
+	i have right now. keep it separate, dont put nailedit in the actual minio server.
+	the plugin model seems like a future idea. he didnt make it sound like itd be now, he said
+	after it merges in with the new UX changes.
+
+	he seemed positive with my approach. sounded like a blessing +1
+
+	he didnt know i made nailedit lol
+
+	on docker, install imagemagick with the image. that way it gets the fastest. otherwise
+	use pure go, pure go should always be the fallback, good if we can do it for lots of things.
+
+	handle pdf, mpeg, png, jpeg.
 
 verifiers: vet fmt lint cyclo spelling
 
