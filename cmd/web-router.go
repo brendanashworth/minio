@@ -85,7 +85,7 @@ func registerWebRouter(mux *router.Router) error {
 	webBrowserRouter.Methods("PUT").Path("/upload/{bucket}/{object:.+}").HandlerFunc(web.Upload)
 	webBrowserRouter.Methods("GET").Path("/download/{bucket}/{object:.+}").Queries("token", "{token:.*}").HandlerFunc(web.Download)
 	webBrowserRouter.Methods("POST").Path("/zip").Queries("token", "{token:.*}").HandlerFunc(web.DownloadZip)
-	webBrowserRouter.Methods("GET").Path("/thumbnail/{bucket}/{object:.+}").Queries("token", "{token:.*}").HandlerFunc(web.Thumbnail)
+	webBrowserRouter.Methods("GET").Path("/thumbnail/{bucket}/{object:.+}").HandlerFunc(web.Thumbnail)
 
 	// Add compression for assets.
 	compressedAssets := handlers.CompressHandler(http.StripPrefix(minioReservedBucketPath, http.FileServer(assetFS())))

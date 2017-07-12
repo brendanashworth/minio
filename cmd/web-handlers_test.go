@@ -943,12 +943,14 @@ func testThumbnailWebHandler(obj ObjectLayer, instanceType string, t TestErrHand
 	objectName := "image.jpg"
 
 	test := func(object string) (int, *bytes.Buffer) {
-		path := "/minio/thumbnail/" + bucketName + "/" + object + "?token=" + token
+		path := "/minio/thumbnail/" + bucketName + "/" + object
 
 		req, reqErr := http.NewRequest("GET", path, nil)
 		if reqErr != nil {
 			t.Fatalf("Cannot create upload request, %v", reqErr)
 		}
+
+		req.Header.Set("Authorization", "Bearer "+token)
 
 		rec := httptest.NewRecorder()
 

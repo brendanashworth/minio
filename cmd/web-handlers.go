@@ -656,9 +656,15 @@ func (web *webAPIHandlers) Thumbnail(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	bucket := vars["bucket"]
 	object := vars["object"]
-	token := r.URL.Query().Get("token")
 
-	if !isAuthTokenValid(token) && !isBucketActionAllowed("s3:GetObject", bucket, object) {
+	// The user needs to provide an Authorization: header, or can s3:GetObject.
+	authErr := webRequestAuthenticate(r)
+	if authErr == errAuthentication {
+		writeWebErrorResponse(w, errAuthentication)
+		return
+	}
+
+	if authErr != nil && !isBucketActionAllowed("s3:GetObject", bucket, object) {
 		writeWebErrorResponse(w, errAuthentication)
 		return
 	}
