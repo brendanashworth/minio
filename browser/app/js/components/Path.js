@@ -14,26 +14,45 @@
  * limitations under the License.
  */
 
+// Path is a component which shows the breadcrumb path for buckets and objects.
+// TODO selectPrefix?
+const Path = {
+  computed: {
+    path() {
+      let currentPath = this.$store.state.currentPath
+      if (!currentPath) return (null)
+
+      return currentPath.split('/').map((dir, i, array) => {
+        // dirPath is a list of all previous dirs.
+        let dirPath = array.filter((e, index) => index <= i).join('/') + '/'
+
+        return <span key={ i } onClick={ (e) => selectPrefix(e, dirPath) }>{ dir }</span>
+      })
+    }
+
+    currentBucket() {
+      return this.$store.state.currentBucket
+    }
+  }
+
+  render (h) {
+    return (
+      <nav className="breadcrumb">
+        <span onClick={ (e) => selectPrefix(e, '') }>{ currentBucket }</span>
+        { path }
+      </nav>
+    )
+  }
+})
+
+
 import React from 'react'
 import connect from 'react-redux/lib/components/connect'
 
 let Path = ({currentBucket, currentPath, selectPrefix}) => {
-  let dirPath = []
-  let path = ''
-  if (currentPath) {
-    path = currentPath.split('/').map((dir, i) => {
-      dirPath.push(dir)
-      let dirPath_ = dirPath.join('/') + '/'
-      return <span key={ i } onClick={ (e) => selectPrefix(e, dirPath_) }>{ dir }</span>
-    })
-  }
 
-  return (
-    <nav className="breadcrumb">
-      <span onClick={ (e) => selectPrefix(e, '') }>{ currentBucket }</span>
-      { path }
-    </nav>
-  )
+
+
 }
 
 export default connect(state => {

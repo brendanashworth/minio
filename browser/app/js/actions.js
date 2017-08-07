@@ -334,37 +334,6 @@ export const selectBucket = (newCurrentBucket, prefix) => {
   }
 }
 
-export const deleteBucket = (bucket) => {
-  return (dispatch, getState) => {
-    // DeleteBucket() RPC call will ONLY delete a bucket if it is empty of
-    // objects. This means a call can just be sent, as it is entirely reversable
-    // and won't do any permanent damage.
-    web.DeleteBucket({
-      bucketName: bucket
-    })
-      .then(() => {
-        dispatch(showAlert({
-          type: 'info',
-          message: `Bucket '${bucket}' has been deleted.`
-        }))
-        dispatch(removeBucket(bucket))
-      })
-      .catch(err => {
-        let message = err.message
-
-        // Show a custom "bucket not empty" message, as it can be confusing.
-        if (/Bucket not empty/.test(err.message)) {
-          message = `Bucket '${bucket}' must be empty to delete.`
-        }
-
-        dispatch(showAlert({
-          type: 'danger',
-          message: message
-        }))
-      })
-  }
-}
-
 export const listObjects = () => {
   return (dispatch, getState) => {
     const {currentBucket, currentPath, marker, objects, istruncated, web} = getState()

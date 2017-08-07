@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-import React from 'react'
 import classNames from 'classnames'
 import logo from '../../img/logo.svg'
-import Alert from 'react-bootstrap/lib/Alert'
 import * as actions from '../actions'
 import InputGroup from '../components/InputGroup'
 
-export default class Login extends React.Component {
+export const Login = {
+  methods: {
+    hideAlert() {
+
+    }
+  }
   handleSubmit(event) {
     event.preventDefault()
     const {web, dispatch, loginRedirectPath} = this.props
@@ -53,7 +56,7 @@ export default class Login extends React.Component {
           message: e.message
         }))
       })
-  }
+  },
 
   componentWillMount() {
     const {dispatch} = this.props
@@ -63,27 +66,29 @@ export default class Login extends React.Component {
       message: ''
     }))
     document.body.classList.add('is-guest')
-  }
+  },
 
   componentWillUnmount() {
     document.body.classList.remove('is-guest')
-  }
+  },
 
   hideAlert() {
     const {dispatch} = this.props
     dispatch(actions.hideAlert())
-  }
+  },
 
-  render() {
+  render(h) {
     const {alert} = this.props
-    let alertBox = <Alert className={ 'alert animated ' + (alert.show ? 'fadeInDown' : 'fadeOutUp') } bsStyle={ alert.type } onDismiss={ this.hideAlert.bind(this) }>
+    let alertBox = <b-alert className={ 'alert animated ' + (alert.show ? 'fadeInDown' : 'fadeOutUp') } variant={ alert.type } v-on:dismiss="hideAlert">
                      <div className='text-center'>
                        { alert.message }
                      </div>
-                   </Alert>
+                   </b-alert>
+
     // Make sure you don't show a fading out alert box on the initial web-page load.
     if (!alert.message)
       alertBox = ''
+
     return (
       <section className="login">
         { alertBox }
