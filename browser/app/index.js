@@ -35,6 +35,7 @@ import { minioBrowserPrefix } from './js/constants'
 import { requireAuth } from './js/auth'
 
 import Login from './js/components/Login.vue'
+import BucketListing from './js/components/Browse.vue'
 
 const router = new VueRouter({
   // This allows us to have host/minio/xxx, instead of host/#/minio/xxx.
@@ -44,14 +45,12 @@ const router = new VueRouter({
     beforeEnter: requireAuth,
     path: minioBrowserPrefix,
     component: {
-      template: '<h1>Here is a bucket listing</h1>'
+      template: '<h1>listing for / ha</h1>'
     }
   }, {
     beforeEnter: requireAuth,
     path: minioBrowserPrefix + '/bucket/:bucket',
-    component: {
-      template: '<h1>Showing bucket {{ $route.params.bucket }}</h1>'
-    }
+    component: BucketListing
   }, {
     path: minioBrowserPrefix + '/login',
     component: Login
