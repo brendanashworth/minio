@@ -46,3 +46,13 @@ const vm = new Vue({
   // Inject the store.
   store
 })
+
+// This gives us a nice and pretty page loader.
+// First fade it out, then hide it entirely.
+setTimeout(() => {
+  document.querySelector('.page-load').classList.add('pl-0')
+}, 50)
+
+setTimeout(() => {
+  document.querySelector('.page-load').classList.add('pl-1')
+}, 400)
