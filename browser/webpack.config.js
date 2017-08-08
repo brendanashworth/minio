@@ -37,6 +37,9 @@ module.exports = {
           presets: ['es2015']
         }
       }, {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+      }, {
         test: /\.less$/,
         loader: 'style!css!less'
       }, {
