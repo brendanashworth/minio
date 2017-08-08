@@ -16,13 +16,11 @@
  !
  !-->
 
-<!-- className={ 'alert animated ' + (alert.show ? 'fadeInDown' : 'fadeOutUp') } variant={ alert.type } onClick={ this.hideAlert } -->
-
 <template>
   <section class="login">
-    <b-alert>
+    <b-alert class="alert animated" :show="alert.show" v-bind:class="{ fadeInDown: alert.show }" v-on:click="hideAlert" :variant="alert.type">
       <div className='text-center'>
-        {{ alertMessage }}
+        {{ alert.message }}
       </div>
     </b-alert>
 
@@ -59,7 +57,11 @@ export default {
   data: function() {
     return {
       host: window.location.host,
-      alertMessage: 'This is an alert message, skrrrrt'
+      alert: {
+        show: false,
+        message: 'This is an alert message, skrrrt',
+        type: 'danger'
+      }
     }
   },
 
