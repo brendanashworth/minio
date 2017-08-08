@@ -16,74 +16,60 @@
 
 import classNames from 'classnames'
 import logo from '../../img/logo.svg'
-import * as actions from '../actions'
-import InputGroup from '../components/InputGroup'
 
 export const Login = {
   methods: {
-    hideAlert() {
+    hideAlert: function(state) {
+      state.commit('setAlert', null)
+    },
 
-    }
-  }
-  handleSubmit(event) {
-    event.preventDefault()
-    const {web, dispatch, loginRedirectPath} = this.props
-    let message = ''
-    if (!document.getElementById('accessKey').value) {
-      message = 'Secret Key cannot be empty'
-    }
-    if (!document.getElementById('secretKey').value) {
-      message = 'Access Key cannot be empty'
-    }
-    if (message) {
-      dispatch(actions.showAlert({
-        type: 'danger',
-        message
-      }))
-      return
-    }
-    web.Login({
-      username: document.getElementById('accessKey').value,
-      password: document.getElementById('secretKey').value
-    })
-      .then((res) => {
-        this.context.router.push(loginRedirectPath)
-      })
-      .catch(e => {
-        dispatch(actions.setLoginError())
-        dispatch(actions.showAlert({
+    submit: function(state) {
+      const {web, dispatch, loginRedirectPath} = this.props
+
+      let accessKey = document.getElementById('accessKey').value
+      let secretKey = document.getElementById('secretKey').value
+
+      if (!secretKey) {
+        return state.dispatch('showAlert', {
           type: 'danger',
-          message: e.message
-        }))
+          message: 'Secret key cannot be empty.'
+        })
+      } else if (!accessKey) {
+        return state.dispatch('showAlert', {
+          type: 'danger',
+          message: 'Access key cannot be empty.'
+        })
+      }
+
+      web.Login({
+        username: accessKey,
+        password: secretKey
       })
+        .then((res) => {
+          this.context.router.push(loginRedirectPath)
+        })
+        .catch(e => {
+          state.dispatch('showAlert', {
+            type: 'danger',
+            message: e.message
+          })
+        })
+    }
   },
 
-  componentWillMount() {
-    const {dispatch} = this.props
-    // Clear out any stale message in the alert of previous page
-    dispatch(actions.showAlert({
-      type: 'danger',
-      message: ''
-    }))
-    document.body.classList.add('is-guest')
-  },
+  template: '<h1>Hello world!</h1>',
+/*
+  render: function(h) {
+    return (<h1>HELLO WORLD</h1>)
 
-  componentWillUnmount() {
-    document.body.classList.remove('is-guest')
-  },
-
-  hideAlert() {
-    const {dispatch} = this.props
-    dispatch(actions.hideAlert())
-  },
-
-  render(h) {
     const {alert} = this.props
-    let alertBox = <b-alert className={ 'alert animated ' + (alert.show ? 'fadeInDown' : 'fadeOutUp') } variant={ alert.type } v-on:dismiss="hideAlert">
-                     <div className='text-center'>
-                       { alert.message }
-                     </div>
-                   </b-alert>
+    let alertBox = (
+      <b-alert className={ 'alert animated ' + (alert.show ? 'fadeInDown' : 'fadeOutUp') } variant={ alert.type } onClick={ this.hideAlert }>
+        <div className='text-center'>
+          { alert.message }
+        </div>
+      </b-alert>
+    )
 
     // Make sure you don't show a fading out alert box on the initial web-page load.
     if (!alert.message)
@@ -93,7 +79,7 @@ export const Login = {
       <section className="login">
         { alertBox }
         <div className="login__content">
-          <form className="login__form" onSubmit={ this.handleSubmit.bind(this) }>
+          <form className="login__form" onSubmit={ this.submit }>
             <div className="form-group form-group--invert">
               <input className="form-group__field text-center"
                 type="text"
@@ -119,9 +105,5 @@ export const Login = {
         </div>
       </section>
     )
-  }
-}
-
-Login.contextTypes = {
-  router: React.PropTypes.object.isRequired
+  }*/
 }

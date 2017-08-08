@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
+import { minioBrowserPrefix } from './constants'
+
+import Vue from 'vue'
 import Vuex from 'vuex'
+Vue.use(Vuex)
 
 // This store is our global state manager.
 export const store = new Vuex.Store({
@@ -135,9 +139,9 @@ export const store = new Vuex.Store({
     },
 
     addUpload(state, upload) {
-      upload = {loaded: 0, ...upload}
+      upload = Object.assign({loaded: 0}, upload)
 
-      state.uploads = { ...state.uploads, [upload.slug]: upload }
+      state.uploads = Object.assign({[upload.slug]: upload}, state.uploads)
     },
 
     // Set the progress of a single upload slug.

@@ -18,11 +18,9 @@ import 'babel-polyfill'
 import './less/main.less'
 
 import Vue from 'vue'
-import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import BootstrapVue from 'bootstrap-vue'
 
-Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
 
@@ -40,9 +38,11 @@ const router = new VueRouter({
 })
 
 const vm = new Vue({
+  el: document.getElementById('root'),
+
   // Inject the router.
   router,
 
   // Inject the store.
   store
-}).$mount('#root')
+})

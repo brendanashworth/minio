@@ -23,7 +23,6 @@ import Modal from 'react-bootstrap/lib/Modal'
 import ModalBody from 'react-bootstrap/lib/ModalBody'
 import ModalHeader from 'react-bootstrap/lib/ModalHeader'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import InputGroup from './InputGroup'
 
 class SettingsModal extends React.Component {
 
