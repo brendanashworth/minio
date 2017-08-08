@@ -19,3 +19,4 @@ coverage.txt
 node_modules
 production
 dev
+npm-debug.log

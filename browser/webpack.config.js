@@ -32,7 +32,7 @@ module.exports = {
   module: {
     loaders: [{
         test: /\.js$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         query: {
           presets: ['es2015']
         }
@@ -41,19 +41,19 @@ module.exports = {
         loader: 'vue-loader',
       }, {
         test: /\.less$/,
-        loader: 'style!css!less'
+        loader: 'style-loader!css-loader!less-loader'
       }, {
         test: /\.json$/,
         loader: 'json-loader'
       },{
         test: /\.css$/,
-        loader: 'style!css'
+        loader: 'style-loader!css-loader'
       }, {
         test: /\.(eot|woff|woff2|ttf|svg|png)/,
-        loader: 'url'
+        loader: 'url-loader'
       }]
   },
-  node:{
+  node: {
     fs:'empty'
   },
   devServer: {
@@ -92,13 +92,13 @@ module.exports = {
       {from: 'app/img/logo.svg'}
     ]),
     new webpack.ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(en)$/),
-    new purify({
+    /*new purify({
         basePath: __dirname,
         paths: [
             "app/index.html",
             "app/js/*.js"
         ]
-    })
+    })*/
   ],
   resolve: {
     alias: {

@@ -16,15 +16,16 @@
  !
  !-->
 
-<template>
-  <b-alert className={ 'alert animated ' + (alert.show ? 'fadeInDown' : 'fadeOutUp') } variant={ alert.type } onClick={ this.hideAlert }>
-    <div className='text-center'>
-      { alert.message }
-    </div>
-  </b-alert>
+<!-- className={ 'alert animated ' + (alert.show ? 'fadeInDown' : 'fadeOutUp') } variant={ alert.type } onClick={ this.hideAlert } -->
 
+<template>
   <section class="login">
-    { alertBox }
+    <b-alert>
+      <div className='text-center'>
+        { alert.message }
+      </div>
+    </b-alert>
+
     <div class="login__content">
       <form class="login__form" onSubmit={ this.submit }>
         <div class="form-group form-group--invert">
