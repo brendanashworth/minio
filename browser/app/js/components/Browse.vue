@@ -40,13 +40,10 @@
         </div>
 
         <Path />
-        <BrowserUpdate />
       </header>
-      <SideBar searchBuckets={ this.searchBuckets.bind(this) }
-        selectBucket={ this.selectBucket.bind(this) }
-        clickOutside={ this.hideSidebar.bind(this) }
-        showPolicy={ this.showBucketPolicy.bind(this) }
-        storageDetails={ storageUsageDetails } />
+
+      <SideBar />
+
       <div class="objects">
         <header class="objects__row" data-type="folder">
           <div class="objects__item objects__item--name" v-on:click="sortObjectsByName" data-sort="name">
@@ -78,24 +75,17 @@
           </div>
         </header>
         <div className="objects__container">
-          <Dropzone>
+          <!--<Dropzone>-->
             <InfiniteScroll loadMore={ this.listObjects.bind(this) }
               hasMore={ istruncated }
               useWindow={ true }
               initialLoad={ false }>
-              <ObjectsList dataType={ this.dataType.bind(this) }
-                selectPrefix={ this.selectPrefix.bind(this) }
-                showDeleteConfirmation={ this.showDeleteConfirmation.bind(this) }
-                shareObject={ this.shareObject.bind(this) }
-                checkObject={ this.checkObject.bind(this) }
-                checkedObjectsArray={ checkedObjects }
-                currentBucket={ currentBucket }
-                showObjectPreview={ this.showPreview.bind(this) } />
+              <ObjectsList />
             </InfiniteScroll>
             <div className="text-center" style={ { display: (istruncated && currentBucket) ? 'block' : 'none' } }>
               <span>Loading...</span>
             </div>
-          </Dropzone>
+          <!--</Dropzone>-->
         </div>
       </div>
       <Preview />
@@ -275,29 +265,19 @@
 import humanize from 'humanize'
 import storage from 'local-storage-fallback'
 
-import browserHistory from 'react-router/lib/browserHistory'
-import Modal from 'react-bootstrap/lib/Modal'
-import ModalBody from 'react-bootstrap/lib/ModalBody'
-import ModalHeader from 'react-bootstrap/lib/ModalHeader'
-import Alert from 'react-bootstrap/lib/Alert'
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import Tooltip from 'react-bootstrap/lib/Tooltip'
-import Dropdown from 'react-bootstrap/lib/Dropdown'
+import Path from './Path.vue'
+import BrowserDropdown from './BrowserDropdown.vue'
+import Preview from './Preview.vue'
+import ObjectsList from './ObjectsList.vue'
+import SideBar from './SideBar.vue'
 
-import Path from '../components/Path.vue'
-import BrowserDropdown from '../components/BrowserDropdown.vue'
-import Preview from '../components/Preview.vue'
-
-import Dropzone from '../components/Dropzone'
-import ObjectsList from '../components/ObjectsList'
-import SideBar from '../components/SideBar'
-import BrowserUpdate from '../components/BrowserUpdate'
-import UploadModal from '../components/UploadModal'
-import SettingsModal from '../components/SettingsModal'
+/*import Dropzone from '../components/Dropzone'*/
+import UploadModal from '../components/modals/UploadModal'
+import SettingsModal from '../components/modals/SettingsModal'
 import PolicyInput from '../components/PolicyInput'
 import Policy from '../components/Policy'
+import ConfirmModal from '../components/ConfirmModal'
 
-import ConfirmModal from './ConfirmModal'
 import * as actions from '../actions'
 import * as utils from '../utils'
 import * as mime from '../mime'
@@ -549,10 +529,6 @@ export default {
       dispatch(actions.hideShareObject())
     },
 
-    dataType: function(name, contentType) {
-      return mime.getDataType(name, contentType)
-    },
-
     sortObjectsByName: function(e) {
       const {dispatch, objects, sortNameOrder} = this.props
       dispatch(actions.setObjects(utils.sortObjectsByName(objects, !sortNameOrder)))
@@ -687,14 +663,7 @@ export default {
       }
 
       if (web.LoggedIn()) {
-        storageUsageDetails = <div className="browser-status">
-                                <div className="browser-status__storage">
-                                  <small>{ humanize.filesize(total - free) } of { humanize.filesize(total) } Used</small>
-                                  <div className="browser-status__chart">
-                                    <div style={ { width: usedPercent } }></div>
-                                  </div>
-                                </div>
-                              </div>
+        storageUsageDetails =
       }
 
       let createButton = ''

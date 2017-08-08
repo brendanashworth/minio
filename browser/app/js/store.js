@@ -178,6 +178,10 @@ export const store = new Vuex.Store({
         show: true,
         alertTimeout
       }, alert))
+    },
+
+    uploadFile(file, xhr) {
+      // TODO implement
     }
   }
 })
