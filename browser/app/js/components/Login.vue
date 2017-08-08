@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import { minioBrowserPrefix } from '../constants'
+
 export default {
   data: function() {
     return {
@@ -94,7 +96,7 @@ export default {
         password: secretKey
       })
         .then((res) => {
-          this.$router.push('/')
+          this.$router.push(minioBrowserPrefix)
         })
         .catch(e => {
           store.dispatch('showAlert', {

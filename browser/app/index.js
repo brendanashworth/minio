@@ -32,6 +32,7 @@ import Web from './js/web'
 
 // Initialize our routes.
 import { minioBrowserPrefix } from './js/constants'
+import { requireAuth } from './js/auth'
 
 import Login from './js/components/Login.vue'
 
@@ -40,8 +41,29 @@ const router = new VueRouter({
   mode: 'history',
 
   routes: [{
+    beforeEnter: requireAuth,
+    path: minioBrowserPrefix,
+    component: {
+      template: '<h1>Here is a bucket listing</h1>'
+    }
+  }, {
+    beforeEnter: requireAuth,
+    path: minioBrowserPrefix + '/bucket/:bucket',
+    component: {
+      template: '<h1>Showing bucket {{ $route.params.bucket }}</h1>'
+    }
+  }, {
     path: minioBrowserPrefix + '/login',
     component: Login
+  }, {
+    // Redirect / to /minio.
+    path: '/',
+    redirect: minioBrowserPrefix
+  }, {
+    path: '*',
+    component: {
+      template: '<h1>404 not found, ha</h1>'
+    }
   }]
 })
 
