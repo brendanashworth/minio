@@ -27,7 +27,7 @@
     </b-alert>
 
     <div class="login__content">
-      <form class="login__form" onSubmit={ this.submit }>
+      <form class="login__form" v-on:submit="submit">
         <div class="form-group form-group--invert">
           <input class="form-group__field text-center"
             type="text"
