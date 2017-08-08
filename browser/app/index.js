@@ -27,12 +27,20 @@ Vue.use(BootstrapVue)
 // This is our store, a global way of managing state in the application.
 import { store } from './js/store'
 
+// This allows us to manipulate the server.
+import Web from './js/web'
+
 // Initialize our routes.
+import { minioBrowserPrefix } from './js/constants'
+
 import Login from './js/components/Login.vue'
 
 const router = new VueRouter({
+  // This allows us to have host/minio/xxx, instead of host/#/minio/xxx.
+  mode: 'history',
+
   routes: [{
-    path: '/login',
+    path: minioBrowserPrefix + '/login',
     component: Login
   }]
 })
@@ -46,6 +54,11 @@ const vm = new Vue({
   // Inject the store.
   store
 })
+
+// Initiate our connection with the server.
+const web = new Web(`${window.location.protocol}//${window.location.host}${minioBrowserPrefix}/webrpc`, vm)
+
+vm.$store.state.web = web
 
 // This gives us a nice and pretty page loader.
 // First fade it out, then hide it entirely.

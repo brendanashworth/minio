@@ -25,7 +25,7 @@
     </b-alert>
 
     <div class="login__content">
-      <form class="login__form" v-on:submit="submit">
+      <form class="login__form" v-on:submit.prevent="submit">
         <div class="form-group form-group--invert">
           <input class="form-group__field text-center"
             type="text"
@@ -56,47 +56,48 @@
 export default {
   data: function() {
     return {
-      host: window.location.host,
-      alert: {
-        show: false,
-        message: 'This is an alert message, skrrrt',
-        type: 'danger'
-      }
+      host: window.location.host
+    }
+  },
+
+  computed: {
+    alert() {
+      return this.$store.state.alert
     }
   },
 
   methods: {
-    hideAlert: function(state) {
-      state.commit('setAlert', null)
+    hideAlert: function() {
+      this.$store.commit('setAlert', null)
     },
 
-    submit: function(state) {
-      const {web, dispatch, loginRedirectPath} = this.props
+    submit: function() {
+      const store = this.$store
 
-      let accessKey = document.getElementById('accessKey').value
-      let secretKey = document.getElementById('secretKey').value
+      const accessKey = document.getElementById('accessKey').value
+      const secretKey = document.getElementById('secretKey').value
 
       if (!secretKey) {
-        return state.dispatch('showAlert', {
+        return store.dispatch('showAlert', {
           type: 'danger',
           message: 'Secret key cannot be empty.'
         })
       } else if (!accessKey) {
-        return state.dispatch('showAlert', {
+        return store.dispatch('showAlert', {
           type: 'danger',
           message: 'Access key cannot be empty.'
         })
       }
 
-      web.Login({
+      store.state.web.Login({
         username: accessKey,
         password: secretKey
       })
         .then((res) => {
-          this.context.router.push(loginRedirectPath)
+          this.$router.push('/')
         })
         .catch(e => {
-          state.dispatch('showAlert', {
+          store.dispatch('showAlert', {
             type: 'danger',
             message: e.message
           })
