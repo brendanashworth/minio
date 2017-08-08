@@ -28,7 +28,7 @@ Vue.use(BootstrapVue)
 import { store } from './js/store'
 
 // Initialize our routes.
-import { Login } from './js/components/Login.vue'
+import Login from './js/components/Login.vue'
 
 const router = new VueRouter({
   routes: [{

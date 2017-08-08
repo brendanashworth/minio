@@ -22,7 +22,7 @@
   <section class="login">
     <b-alert>
       <div className='text-center'>
-        { alert.message }
+        {{ alertMessage }}
       </div>
     </b-alert>
 
@@ -47,7 +47,7 @@
     </div>
     <div class="login__footer">
       <div class="login__host">
-        { window.location.host }
+        {{ host }}
       </div>
       <img class="login__logo" src="/img/logo.svg" alt="" />
     </div>
@@ -56,6 +56,13 @@
 
 <script>
 export default {
+  data: function() {
+    return {
+      host: window.location.host,
+      alertMessage: 'This is an alert message, skrrrrt'
+    }
+  },
+
   methods: {
     hideAlert: function(state) {
       state.commit('setAlert', null)
