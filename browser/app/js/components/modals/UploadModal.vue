@@ -115,7 +115,7 @@ export default {
 
       return {
         text, percent,
-        total: filesize(totalLoaded),
+        total: filesize(totalLoaded).human(),
         percentRounded: percent.toFixed(2)
       }
     }

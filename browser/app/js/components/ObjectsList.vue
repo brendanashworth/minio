@@ -57,7 +57,7 @@ export default {
 
       return objects.map((object, i) => {
         // Gives data about each object.
-        let size = object.name.endsWith('/') ? '' : filesize(object.size)
+        let size = object.name.endsWith('/') ? '' : filesize(object.size).human()
         let lastModified = object.name.endsWith('/') ? '' : Moment(object.lastModified).format('lll')
         let path = currentPath + object.name
         let type = mime.getDataType(object.name, object.contentType)

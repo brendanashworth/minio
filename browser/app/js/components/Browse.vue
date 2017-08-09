@@ -76,7 +76,7 @@
 
       <object-preview />
 
-      <upload-modal />
+      <!--<upload-modal />
 
       <Dropdown v-if="isLoggedIn" dropup class="create-new" id="dropdown-create-new">
         <Dropdown.Toggle noCaret class="create-new__toggle">
@@ -126,8 +126,9 @@
         </ModalBody>
       </Modal>
 
-      <about-modal />
+      <about-modal />-->
 
+      <!--
       <Modal class="policy"
         animation={ false }
         show={ showBucketPolicy }
@@ -142,7 +143,7 @@
           <policy-view v-for="policy in policies" :key="policy.prefix" :prefix="policy.prefix" :policy="policy.policy" />
         </div>
       </Modal>
-      <confirm-modal show={ deleteConfirmation.show }
+      <confirm-modal
         icon='zmdi-alert-polygon c-red'
         text='Are you sure you want to delete?'
         sub='This cannot be undone!'
@@ -154,6 +155,7 @@
       <share-modal ref="share_modal" />
 
       <settings-modal />
+      -->
 
       <div class="sidebar-backdrop" v-bind:class="{ 'sidebar-backdrop--toggled': sideBarActive }" v-on:click="hideSidebar" />
     </section>

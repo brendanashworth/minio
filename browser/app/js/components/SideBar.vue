@@ -86,14 +86,14 @@ export default {
 
     usage: function() {
       // TODO get real figures
-      const total = 0
-      const free = 12
+      const total = 50 * 1024
+      const free = 12.3 * 1024
       const used = total - free
 
       return {
         total, free, used,
-        humanUsed: filesize(used),
-        humanTotal: filesize(total),
+        humanUsed: filesize(used).human(),
+        humanTotal: filesize(total).human(),
         usedPercent: used / total
       }
     }

@@ -16,8 +16,7 @@
 
 <template>
   <b-modal bsSize="small" ok-title={{ okText }} cancel-title={{ cancelText }}
-    v-bind:show="show"
-    class="modal--confirm" v-bind:class="{ baseClass }">
+    @ok="ok" @cancel="cancel" class="modal--confirm">
     <div class="modal--confirm__icon">
       <i class="zmdi" v-bind:class="{ icon }" />
     </div>
@@ -35,6 +34,6 @@
 export default {
   name: 'ConfirmModal',
 
-  props: ['cancelText', 'cancel', 'okText', 'ok', 'sub', 'text', 'icon', 'show']
+  props: ['cancelText', 'cancel', 'okText', 'ok', 'sub', 'text', 'icon']
 }
 </script>
