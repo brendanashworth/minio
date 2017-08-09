@@ -89,6 +89,8 @@ export default {
 
   computed: {
     uploads: function() {
+      const uploads = this.$store.state.uploads
+
       // If we don't have any files uploading, don't show anything.
       let numberUploading = Object.keys(uploads).length
       if (numberUploading == 0)

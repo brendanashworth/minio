@@ -133,87 +133,8 @@
         okHandler={ this.removeObject.bind(this) }
         cancelHandler={ this.hideDeleteConfirmation.bind(this) }>
       </confirm-modal>
-      <Modal show={ shareObject.show }
-        animation={ false }
-        onHide={ this.hideShareObjectModal.bind(this) }
-        bsSize="small">
-        <ModalHeader>
-          Share Object
-        </ModalHeader>
-        <ModalBody>
-          <div class="form-group">
-            <label class="form-group__label">
-              Shareable Link
-            </label>
-            <input class="form-group__field"
-              type="text"
-              ref="copyTextInput"
-              readOnly="readOnly"
-              value={ window.location.protocol + '//' + shareObject.url }
-              v-on:click="selectTexts" />
-            <i class="form-group__bar" />
-          </div>
-          <div class="form-group" style={ { display: web.LoggedIn() ? 'block' : 'none' } }>
-            <label class="form-group__label">
-              Expires in
-            </label>
-            <div class="set-expire">
-              <div class="set-expire__item">
-                <i class="set-expire__increase" onClick={ this.handleExpireValue.bind(this, 'expireDays', 1, shareObject.object) }></i>
-                <div class="set-expire__title">
-                  Days
-                </div>
-                <div class="set-expire__value">
-                  <input ref="expireDays"
-                    type="number"
-                    min={ 0 }
-                    max={ 7 }
-                    defaultValue={ 5 } />
-                </div>
-                <i class="set-expire__decrease" onClick={ this.handleExpireValue.bind(this, 'expireDays', -1, shareObject.object) }></i>
-              </div>
-              <div class="set-expire__item">
-                <i class="set-expire__increase" onClick={ this.handleExpireValue.bind(this, 'expireHours', 1, shareObject.object) }></i>
-                <div class="set-expire__title">
-                  Hours
-                </div>
-                <div class="set-expire__value">
-                  <input ref="expireHours"
-                    type="number"
-                    min={ 0 }
-                    max={ 23 }
-                    defaultValue={ 0 } />
-                </div>
-                <i class="set-expire__decrease" onClick={ this.handleExpireValue.bind(this, 'expireHours', -1, shareObject.object) }></i>
-              </div>
-              <div class="set-expire__item">
-                <i class="set-expire__increase" onClick={ this.handleExpireValue.bind(this, 'expireMins', 1, shareObject.object) }></i>
-                <div class="set-expire__title">
-                  Minutes
-                </div>
-                <div class="set-expire__value">
-                  <input ref="expireMins"
-                    type="number"
-                    min={ 0 }
-                    max={ 59 }
-                    defaultValue={ 0 } />
-                </div>
-                <i class="set-expire__decrease" onClick={ this.handleExpireValue.bind(this, 'expireMins', -1, shareObject.object) }></i>
-              </div>
-            </div>
-          </div>
-        </ModalBody>
-        <div class="modal-footer">
-          <!--<CopyToClipboard text={ window.location.protocol + '//' + shareObject.url } onCopy={ this.showMessage.bind(this) }>-->
-            <button class="btn btn--link">
-              Copy Link
-            </button>
-          <!--</CopyToClipboard>-->
-          <button class="btn btn--link" v-on:click="hideShareObjectModal">
-            Cancel
-          </button>
-        </div>
-      </Modal>
+
+      <share-modal ref="share_modal" />
 
       <settings-modal />
 
@@ -240,6 +161,7 @@ import ConfirmModal from './modals/ConfirmModal.vue'
 import UploadModal from './modals/UploadModal.vue'
 import SettingsModal from './modals/SettingsModal.vue'
 import AboutModal from './modals/AboutModal.vue'
+import ShareModal from './modals/ShareModal.vue'
 
 /*import Dropzone from '../components/Dropzone'*/
 
@@ -270,7 +192,8 @@ export default {
     'confirm-modal': ConfirmModal,
     'upload-modal': UploadModal,
     'settings-modal': SettingsModal,
-    'about-modal': AboutModal
+    'about-modal': AboutModal,
+    'share-modal': ShareModal
   },
 
   computed: Object.assign({
@@ -534,41 +457,12 @@ export default {
         type: 'success',
         message: 'Link copied to clipboard!'
       }))
-      this.hideShareObjectModal()
+
+      this.$refs.share_modal.hide()
     },
 
     selectTexts: function() {
       this.refs.copyTextInput.select()
-    },
-
-    handleExpireValue: function(targetInput, inc, object) {
-      let value = this.refs[targetInput].value
-      let maxValue = (targetInput == 'expireHours') ? 23 : (targetInput == 'expireMins') ? 59 : (targetInput == 'expireDays') ? 7 : 0
-      value = isNaN(value) ? 0 : value
-
-      // Use custom step count to support browser Edge
-      if( (inc === -1) ) {
-        if (value != 0) {
-          value--
-        }
-      } else {
-        if (value != maxValue) {
-          value++
-        }
-      }
-      this.refs[targetInput].value = value
-
-      // Reset hours and mins when days reaches it's max value
-      if (this.refs.expireDays.value == 7) {
-        this.refs.expireHours.value = 0
-        this.refs.expireMins.value = 0
-      }
-      if (this.refs.expireDays.value + this.refs.expireHours.value + this.refs.expireMins.value == 0) {
-        this.refs.expireDays.value = 7
-      }
-
-      const {dispatch} = this.props
-      dispatch(actions.shareObject(object, this.refs.expireDays.value, this.refs.expireHours.value, this.refs.expireMins.value))
     },
 
     checkObject: function(e, objectName) {

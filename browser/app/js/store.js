@@ -59,7 +59,6 @@ export const store = new Vuex.Store({
       show: false
     },
     shareObject: {
-      show: false,
       url: '',
       object: ''
     },
@@ -69,6 +68,19 @@ export const store = new Vuex.Store({
       display: false,
       bucket: '',
       object: ''
+    }
+  },
+
+
+  // Getters are computed based on the state.
+  getters: {
+    // Technically this is computed off of local storage, but that's synchronous.
+    isLoggedIn: state => {
+      // web can be null
+      if (!state.web)
+        return false
+
+      return state.web.LoggedIn()
     }
   },
 
@@ -190,42 +202,42 @@ export const store = new Vuex.Store({
 
     uploadFile(file, xhr) {
       // TODO implement
+    },
+
+    shareObject: function(object, days, hours, minutes) {
+      const state = this.$store.state
+
+      const web = state.web
+      const host = location.host
+      const bucket = state.currentBucket
+
+      if (!web || !web.LoggedIn()) {
+        state.shareObject = { object, url: `${host}/${bucket}/${object}` }
+        return
+      }
+
+      let expiry = days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60
+      web.PresignedGet({
+        host,
+        bucket,
+        object,
+        expiry
+      })
+        .then(obj => {
+          state.shareObject = { object, url: obj.url }
+
+          state.dispatch('showAlert', {
+            type: 'success',
+            message: `Object shared. Expires in ${days} days, ${hours} hours, and ${minutes} minutes.`
+          })
+        })
+        .catch(err => state.dispatch('error', err))
     }
   }
 })
 
 /*
-export const shareObject = (object, days, hours, minutes) => (dispatch, getState) => {
-  const {currentBucket, web} = getState()
-  let host = location.host
-  let bucket = currentBucket
-
-  if (!web.LoggedIn()) {
-    dispatch(showShareObject(object, `${host}/${bucket}/${object}`))
-    return
-  }
-
-  let expiry = days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60
-  web.PresignedGet({
-    host,
-    bucket,
-    object,
-    expiry
-  })
-    .then(obj => {
-      dispatch(showShareObject(object, obj.url))
-      dispatch(showAlert({
-        type: 'success',
-        message: `Object shared. Expires in ${days} days ${hours} hours ${minutes} minutes.`
-      }))
-    })
-    .catch(err => {
-      dispatch(showAlert({
-        type: 'danger',
-        message: err.message
-      }))
-    })
-}
+export const
 
 export const listObjects = () => {
   return (dispatch, getState) => {
