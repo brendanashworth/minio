@@ -270,43 +270,6 @@ export const store = new Vuex.Store({
 })
 
 /*
-export const
-
-export const listObjects = () => {
-  return (dispatch, getState) => {
-    const {currentBucket, currentPath, marker, objects, istruncated, web} = getState()
-    if (!istruncated) return
-    web.ListObjects({
-      bucketName: currentBucket,
-      prefix: currentPath,
-      marker: marker
-    })
-      .then(res => {
-        let objects = res.objects
-        if (!objects)
-          objects = []
-        objects = objects.map(object => {
-          object.name = object.name.replace(`${currentPath}`, '');
-          return object
-        })
-        dispatch(appendObjects(objects, res.nextmarker, res.istruncated))
-        dispatch(setPrefixWritable(res.writable))
-        dispatch(setLoadBucket(''))
-        dispatch(setLoadPath(''))
-      })
-      .catch(err => {
-        dispatch(showAlert({
-          type: 'danger',
-          message: err.message
-        }))
-        dispatch(setLoadBucket(''))
-        dispatch(setLoadPath(''))
-        // Use browserHistory.replace instead of push so that browser back button works fine.
-        browserHistory.replace(`${minioBrowserPrefix}/login`)
-      })
-  }
-}
-
 export const selectPrefix = prefix => {
   return (dispatch, getState) => {
     const {currentBucket, web} = getState()

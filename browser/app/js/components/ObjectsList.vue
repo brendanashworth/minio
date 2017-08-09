@@ -16,18 +16,18 @@
 
 <template>
   <div>
-    <div v-for="object in objects" class="objects__row" v-bind:class="{ 'objects__row--folder': object.isFolder, 'fesl-loading': object.isLoading, 'objects__row-selected': object.isChecked }" v-on:click="showObjectPreview(object.name)">
-      <div class="objects__item objects__item--select" data-object-type={{ object.type }}>
+    <div v-for="object in objects" class="objects__row" v-bind:class="{ 'objects__row--folder': object.isFolder, 'objects__row-selected': object.isChecked }" v-on:click="showObjectPreview(object.name)">
+      <div class="objects__item objects__item--select" :data-object-type="object.type">
         <div class="checkbox">
           <input type="checkbox"
-            name={{ object.name }}
-            checked={{ object.isChecked }}
+            :name="object.name"
+            :checked="object.isChecked"
             v-on:change="checkObject(object.name)" />
           <i class="checkbox__helper" />
         </div>
       </div>
       <div class="objects__item objects__item--name">
-        <a href="" v-on:click="selectPrefix(object.path)" }>
+        <a href="#" v-on:click="selectPrefix(object.path)">
           {{ object.name }}
         </a>
       </div>
@@ -47,22 +47,30 @@ import filesize from 'file-size'
 
 import MaterialDesignIconicFonts from 'material-design-iconic-font/dist/css/material-design-iconic-font.min.css'
 
-import mime from '../mime'
+//import mime from '../mime'
 
 export default {
+  name: 'ObjectsList',
+
+  data: function() {
+    return {
+      rawObjects: []
+    }
+  },
+
   computed: {
     objects: function() {
-      const objects = this.$store.state.objects
+      const objects = this.rawObjects
       const checkedObjects = this.$store.state.checkedObjects
+      const currentPath = this.$store.state.currentPath
 
       return objects.map((object, i) => {
         // Gives data about each object.
         let size = object.name.endsWith('/') ? '' : filesize(object.size).human()
         let lastModified = object.name.endsWith('/') ? '' : Moment(object.lastModified).format('lll')
         let path = currentPath + object.name
-        let type = mime.getDataType(object.name, object.contentType)
+        let type = 'other' // mime.getDataType(object.name, object.contentType)
 
-        let isLoading = (loadPath === path)
         let isChecked = (checkedObjects.indexOf(object.name) != -1)
         let isFolder = (type == 'folder')
 
@@ -71,7 +79,6 @@ export default {
           lastModified,
           path,
           type,
-          isLoading,
           isChecked,
           isFolder
         }
@@ -90,7 +97,38 @@ export default {
 
     showObjectPreview: function(objectName) {
       const bucket = this.$store.state.currentBucket
+    },
+
+    loadObjects: function() {
+      const store = this.$store
+
+      const currentPath = store.state.currentPath
+      const marker = store.state.marker
+
+      store.state.web.ListObjects({
+        bucketName: this.$route.params.bucket,
+        prefix: currentPath,
+        marker: marker
+      })
+        .then(res => {
+          this.rawObjects = res.objects.map(object => {
+            object.name = object.name.replace(currentPath, '')
+
+            return object
+          })
+        })
+        .catch(err => store.dispatch('error', err))
     }
+  },
+
+  // created is a lifecycle hook that will fire when the ObjectsList is created.
+  created() {
+    this.loadObjects()
+  },
+
+  // if the route changes, update the objects
+  watch: {
+    '$route': 'loadObjects'
   }
 }
 </script>
