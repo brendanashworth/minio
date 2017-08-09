@@ -275,10 +275,9 @@ import PolicyInput from './PolicyInput.vue'
 
 import ConfirmModal from './modals/ConfirmModal.vue'
 import UploadModal from './modals/UploadModal.vue'
-
+import SettingsModal from './modals/SettingsModal.vue'
 
 /*import Dropzone from '../components/Dropzone'*/
-import SettingsModal from '../components/modals/SettingsModal'
 
 import * as utils from '../utils'
 import * as mime from '../mime'
