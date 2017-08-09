@@ -80,7 +80,8 @@ export default {
           path,
           type,
           isChecked,
-          isFolder
+          isFolder,
+          name: object.name
         }
       })
     }
