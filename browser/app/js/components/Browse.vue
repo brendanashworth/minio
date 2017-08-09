@@ -60,7 +60,7 @@
           </div>
         </header>
         <div class="objects__container">
-          <!--<Dropzone>--
+          <!--<Dropzone>-
             <InfiniteScroll loadMore={ this.listObjects.bind(this) }
               hasMore={ istruncated }
               useWindow={ true }
@@ -70,7 +70,7 @@
             <div class="text-center" style={ { display: (istruncated && currentBucket) ? 'block' : 'none' } }>
               <span>Loading...</span>
             </div>
-          <!--</Dropzone>-->
+          <!-</Dropzone>-->
         </div>
       </div>
 
@@ -78,7 +78,25 @@
 
       <upload-modal />
 
-      { createButton }
+      <Dropdown v-if="isLoggedIn" dropup class="create-new" id="dropdown-create-new">
+        <Dropdown.Toggle noCaret class="create-new__toggle">
+          <i class="zmdi zmdi-plus"></i>
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <OverlayTrigger placement="top" overlay={ tooltips.uploadFile }>
+            <a href="#" class="create-new__btn create-new__btn--upload">
+              <input type="file" onChange={ this.uploadFile.bind(this) } id="object-upload-input" />
+              <label htmlFor="object-upload-input"> </label>
+            </a>
+          </OverlayTrigger>
+          <OverlayTrigger placement="top" overlay={ tooltips.createBucket }>
+            <a href="#" class="create-new__btn create-new__btn--bucket" v-on:click="showMakeBucketModal"></a>
+          </OverlayTrigger>
+          <OverlayTrigger placement="top" overlay={ tooltips.uploadFolder }>
+            <a href="#" class="create-new__btn create-new__btn--folder"></a>
+          </OverlayTrigger>
+        </Dropdown.Menu>
+      </Dropdown>
 
       <Modal class="create-bucket"
         bsSize="small"
@@ -86,7 +104,7 @@
         show={ showMakeBucketModal }
         onHide={ this.hideMakeBucketModal.bind(this) }>
         <ModalBody>
-          <form onSubmit={ this.makeBucket.bind(this) }>
+          <form v-on:submit="makeBucket">
             <div class="form-group">
               <label class="form-group__label">
                 Create new bucket
@@ -116,32 +134,28 @@
         onHide={ this.hideBucketPolicy.bind(this) }>
         <ModalHeader>
           Bucket Policy
-          <small class="modal-header__sub">({ currentBucket })</small>
+          <small class="modal-header__sub">({{ currentBucket }})</small>
           <i class="close close--dark" v-on:click="hideBucketPolicy">×</i>
         </ModalHeader>
         <div class="policy__body">
-          <policy-input bucket={ currentBucket } />
-          { policies.map((policy, i) => <policy prefix={ policy.prefix } policy={ policy.policy } />) }
+          <policy-input />
+          <policy-view v-for="policy in policies" :key="policy.prefix" :prefix="policy.prefix" :policy="policy.policy" />
         </div>
       </Modal>
       <confirm-modal show={ deleteConfirmation.show }
-        icon={ 'zmdi-alert-polygon c-red' }
+        icon='zmdi-alert-polygon c-red'
         text='Are you sure you want to delete?'
         sub='This cannot be undone!'
         okText='Delete'
         cancelText='Cancel'
-        okHandler={ this.removeObject.bind(this) }
-        cancelHandler={ this.hideDeleteConfirmation.bind(this) }>
+        v-on:ok="removeObject">
       </confirm-modal>
 
       <share-modal ref="share_modal" />
 
       <settings-modal />
 
-      <div className={ classNames({
-                         "sidebar-backdrop": true,
-                         "sidebar-backdrop--toggled": sideBarActive
-                       }) } v-on:click="hideSidebar" />
+      <div class="sidebar-backdrop" v-bind:class="{ 'sidebar-backdrop--toggled': sideBarActive }" v-on:click="hideSidebar" />
     </section>
   </section>
 </template>
@@ -187,7 +201,7 @@ export default {
     'object-preview': Preview,
     'objects-list': ObjectsList,
     'side-bar': SideBar,
-    'policy': Policy,
+    'policy-view': Policy,
     'policy-input': PolicyInput,
     'confirm-modal': ConfirmModal,
     'upload-modal': UploadModal,
@@ -197,8 +211,8 @@ export default {
   },
 
   computed: Object.assign({
-    loggedIn() {
-      return this.$store.state.web.LoggedIn()
+    isLoggedIn: function() {
+      return this.$store.getters.isLoggedIn
     },
   }, mapState({
     alert: state => state.alert,
@@ -209,7 +223,11 @@ export default {
 
     sortNameOrder: state => state.sortNameOrder,
     sortSizeOrder: state => state.sortSizeOrder,
-    sortDateOrder: state => state.sortDateOrder
+    sortDateOrder: state => state.sortDateOrder,
+
+    policies: state => state.policies,
+
+    currentBucket: state => state.currentBucket
   })),
 
   methods: {
@@ -296,23 +314,22 @@ export default {
       }
     },
 
-    makeBucket: function(e) {
-      e.preventDefault()
-      const bucketName = this.refs.makeBucketRef.value
-      this.refs.makeBucketRef.value = ''
-      const {web, dispatch} = this.props
+    makeBucket: function() {
+      const bucketName = this.$refs.makeBucketRef.value
+      this.$refs.makeBucketRef.value = ''
+
+      const web = this.$store.state.web
+
       this.hideMakeBucketModal()
+
       web.MakeBucket({
         bucketName
       })
         .then(() => {
-          dispatch(actions.addBucket(bucketName))
-          dispatch(actions.selectBucket(bucketName))
+          this.$store.state.commit('addBucket', bucketName)
+          this.$store.state.commit('selectBucket', bucketName)
         })
-        .catch(err => dispatch(actions.showAlert({
-          type: 'danger',
-          message: err.message
-        })))
+        .catch(err => this.$store.state.dispatch('error', err))
     },
 
     hideMakeBucketModal: function() {
@@ -525,25 +542,7 @@ export default {
 
       let createButton = ''
       if (web.LoggedIn()) {
-        createButton = <Dropdown dropup class="create-new" id="dropdown-create-new">
-                         <Dropdown.Toggle noCaret class="create-new__toggle">
-                           <i class="zmdi zmdi-plus"></i>
-                         </Dropdown.Toggle>
-                         <Dropdown.Menu>
-                           <OverlayTrigger placement="top" overlay={ tooltips.uploadFile }>
-                             <a href="#" class="create-new__btn create-new__btn--upload">
-                               <input type="file" onChange={ this.uploadFile.bind(this) } id="object-upload-input" />
-                               <label htmlFor="object-upload-input"> </label>
-                             </a>
-                           </OverlayTrigger>
-                           <OverlayTrigger placement="top" overlay={ tooltips.createBucket }>
-                             <a href="#" class="create-new__btn create-new__btn--bucket" v-on:click="showMakeBucketModal"></a>
-                           </OverlayTrigger>
-                           <OverlayTrigger placement="top" overlay={ tooltips.uploadFolder }>
-                             <a href="#" class="create-new__btn create-new__btn--folder"></a>
-                           </OverlayTrigger>
-                         </Dropdown.Menu>
-                       </Dropdown>
+        createButton =
 
       } else {
         if (prefixWritable)

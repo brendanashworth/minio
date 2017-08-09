@@ -16,7 +16,7 @@
 
 <template>
   <b-modal bsSize="small" ok-title={{ okText }} cancel-title={{ cancelText }}
-    v-bind:show="{ show }"
+    v-bind:show="show"
     class="modal--confirm" v-bind:class="{ baseClass }">
     <div class="modal--confirm__icon">
       <i class="zmdi" v-bind:class="{ icon }" />
