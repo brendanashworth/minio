@@ -16,48 +16,48 @@
 
 <template>
   <Modal bsSize="sm" animation={ false } show={ true }>
-    <a className="close close--dark" onClick={ this.hideSettings.bind(this) }>×</a>
+    <a class="close close--dark" onClick={ this.hideSettings.bind(this) }>×</a>
     <ModalHeader>
       Change Password
     </ModalHeader>
     <ModalBody>
-      <div className="form-group">
-        <label className="form-group__label">
+      <div class="form-group">
+        <label class="form-group__label">
           Access key
         </label>
         <input type="text"
-          className="form-group__field"
+          class="form-group__field"
           id="accessKey"
           name="accesskey"
           value={ settings.accessKey }
           onChange={ this.accessKeyChange.bind(this) }
           readonly={ settings.keysReadOnly } />
-        <i className="form-group__bar"></i>
+        <i class="form-group__bar"></i>
       </div>
-      <div className="form-group">
-        <label className="form-group__label">
+      <div class="form-group">
+        <label class="form-group__label">
           Secret key
         </label>
-        <div className="form-group__wrap">
+        <div class="form-group__wrap">
           <input type={ settings.secretKeyVisible ? "text" : "password" }
-            className="form-group__field"
+            class="form-group__field"
             id="secretKey"
             name="secretKey"
             value={ settings.secretKey }
             onChange={ this.secretKeyChange.bind(this) }
             readonly={ settings.keysReadOnly } />
-          <div onClick={ this.secretKeyVisible.bind(this, !settings.secretKeyVisible) } className="form-group__addon">
-            <i className={ "form-group__toggle-type" + (settings.secretKeyVisible ? " toggled" : "") }></i>
+          <div onClick={ this.secretKeyVisible.bind(this, !settings.secretKeyVisible) } class="form-group__addon">
+            <i class={ "form-group__toggle-type" + (settings.secretKeyVisible ? " toggled" : "") }></i>
           </div>
-          <i className="form-group__bar"></i>
+          <i class="form-group__bar"></i>
         </div>
       </div>
     </ModalBody>
-    <div className="modal-footer">
-      <button className={ "btn btn--link " + (settings.keysReadOnly ? "hidden" : "") } onClick={ this.generateAuth.bind(this) }>
+    <div class="modal-footer">
+      <button class={ "btn btn--link " + (settings.keysReadOnly ? "hidden" : "") } onClick={ this.generateAuth.bind(this) }>
         Generate
       </button>
-      <button className={ "btn btn--link " + (settings.keysReadOnly ? "hidden" : "") } onClick={ this.setAuth.bind(this) }>
+      <button class={ "btn btn--link " + (settings.keysReadOnly ? "hidden" : "") } onClick={ this.setAuth.bind(this) }>
         Update
       </button>
     </div>

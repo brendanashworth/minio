@@ -16,40 +16,40 @@
 
 <template>
   <aside class="sidebar" v-bind:class="{'sidebar--toggled': sideBarActive }">
-    <div className="logo">
-      <img className="logo__img" src='/img/logo-dark.svg' alt="" />
-      <div className="logo__title">
+    <div class="logo">
+      <img class="logo__img" src='/img/logo-dark.svg' alt="" />
+      <div class="logo__title">
         <h2>Minio Browser</h2>
         <small>{{ host }}</small>
       </div>
     </div>
-    <div className="buckets">
-      <div className="buckets__search">
-        <div className="form-group">
-          <input className="form-group__field"
+    <div class="buckets">
+      <div class="buckets__search">
+        <div class="form-group">
+          <input class="form-group__field"
             type="text"
             v-on:change="searchBuckets"
             placeholder="Search Buckets..." />
-          <i className="form-group__bar"></i>
+          <i class="form-group__bar"></i>
         </div>
       </div>
-      <ul className="buckets__list">
+      <ul class="buckets__list">
         <li v-for="bucket in buckets" v-bind:class="{ 'buckets__list__active': bucket.isCurrent }" v-on:click="selectBucket(bucket)">
-             <div className="buckets__list__name">
+             <div class="buckets__list__name">
                {{ bucket.name }}
              </div>
-             <div className="buckets__list__actions">
+             <div class="buckets__list__actions">
                <span>{{ bucket.policy }}</span>
-               <span className="buckets__list__policy" v-on:click="showPolicy">edit policy</span>
+               <span class="buckets__list__policy" v-on:click="showPolicy">edit policy</span>
              </div>
            </li>
       </ul>
     </div>
 
-    <div className="browser-status">
-      <div className="browser-status__storage">
+    <div class="browser-status">
+      <div class="browser-status__storage">
         <small>{{ usage.humanUsed }} of {{ usage.humanTotal }} Used</small>
-        <div className="browser-status__chart">
+        <div class="browser-status__chart">
           <div v-bind:style="{ width: usage.usedPercent }"></div>
         </div>
       </div>

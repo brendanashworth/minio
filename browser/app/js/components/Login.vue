@@ -17,7 +17,7 @@
 <template>
   <section class="login">
     <b-alert dismissible class="alert animated" :show="alert.show" v-bind:class="{ fadeInDown: alert.show }" v-on:click="hideAlert" :variant="alert.type">
-      <div className='text-center'>
+      <div class='text-center'>
         {{ alert.message }}
       </div>
     </b-alert>
