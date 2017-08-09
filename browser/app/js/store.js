@@ -22,6 +22,9 @@ Vue.use(Vuex)
 
 // This store is our global state manager.
 export const store = new Vuex.Store({
+  // Only allow state to be mutated in a mutation handler.
+  /* strict: true, */
+
   // This is our default state.
   state: {
     web: null,
@@ -142,9 +145,9 @@ export const store = new Vuex.Store({
 
     // Remove a checked object.
     removeCheckedObject(state, object) {
-      let index = state.objects.indexOf(object)
+      let index = state.checkedObjects.indexOf(object)
 
-      state.objects = state.objects.filter((e, i) => i != index)
+      state.checkedObjects = state.checkedObjects.filter((e, i) => i != index)
     },
 
     setStorageInfo(state, info) {

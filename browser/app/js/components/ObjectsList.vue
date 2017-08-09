@@ -88,12 +88,36 @@ export default {
   },
 
   methods: {
-    selectPrefix: function() {
-      // TODO
+    selectPrefix: function(prefix) {
+      const store = this.$store
+
+      const web = store.state.web
+      const currentPath = store.state.currentPath
+      const currentBucket = store.state.currentBucket
+
+      prefix = encodeURI(prefix)
+
+      if (prefix.endsWith('/') || prefix === '') {
+        // TODO what?
+        if (prefix === currentPath) return
+        browserHistory.push(utils.pathJoin(currentBucket, prefix))
+      } else {
+        // Download the selected file.
+        web.CreateURLToken()
+          .then(res => {
+            window.location = `${window.location.origin}/minio/download/${currentBucket}/${prefix}?token=${res.token}`
+          })
+          .catch(err => store.dispatch('error', err))
+      }
     },
 
-    checkObject: function() {
-      // TODO
+    checkObject: function(object, e) {
+      const isChecked = (this.$store.state.checkedObjects.indexOf(object) > -1)
+
+      if (isChecked)
+        this.$store.commit('removeCheckedObject', object)
+      else
+        this.$store.commit('addCheckedObject', object)
     },
 
     showObjectPreview: function(objectName) {

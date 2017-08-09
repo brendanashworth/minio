@@ -19,7 +19,7 @@
     <b-alert class='alert animated' v-bind:class="{ fadeInDown: alert.show, fadeOutUp: !alert.show }">
       <!-- bsStyle={ alert.type } onDismiss={ this.hideAlert.bind(this) }>-->
        <div class='text-center'>
-         { alert.message }
+         {{ alert.message }}
        </div>
      </b-alert>
 
@@ -33,10 +33,9 @@
             <button v-on:click="shareObject" v-bind:disabled="checkedObjects.length != 1" class="zmdi zmdi-share" />
             <button v-on:click="downloadSelected" v-bind:disabled="checkedObjects.length == 0" class="zmdi zmdi-download" />
           </div>
-          <!-- TODO only if not logged in -->
-          <a class="btn btn-danger" href='/minio/login'>Login</a>
-          <!-- else -->
-          <browser-dropdown />
+
+          <browser-dropdown v-if="isLoggedIn" />
+          <a v-else class="btn btn-danger" href='/minio/login'>Login</a>
         </div>
 
         <breadcrumb-path />
@@ -243,27 +242,6 @@ export default {
       dispatch(actions.listObjects())
     },
 
-    selectPrefix: function(e, prefix) {
-      e.preventDefault()
-      const {dispatch, currentPath, web, currentBucket} = this.props
-      const encPrefix = encodeURI(prefix)
-      if (prefix.endsWith('/') || prefix === '') {
-        if (prefix === currentPath) return
-        browserHistory.push(utils.pathJoin(currentBucket, encPrefix))
-      } else {
-        // Download the selected file.
-        web.CreateURLToken()
-          .then(res => {
-            let url = `${window.location.origin}/minio/download/${currentBucket}/${encPrefix}?token=${res.token}`
-            window.location = url
-          })
-          .catch(err => dispatch(actions.showAlert({
-            type: 'danger',
-            message: err.message
-          })))
-      }
-    },
-
     makeBucket: function() {
       const bucketName = this.$refs.makeBucketRef.value
       this.$refs.makeBucketRef.value = ''
@@ -431,11 +409,6 @@ export default {
 
     selectTexts: function() {
       this.refs.copyTextInput.select()
-    },
-
-    checkObject: function(e, objectName) {
-      const {dispatch} = this.props
-      e.target.checked ? dispatch(actions.checkedObjectsAdd(objectName)) : dispatch(actions.checkedObjectsRemove(objectName))
     },
 
     downloadSelected: function() {

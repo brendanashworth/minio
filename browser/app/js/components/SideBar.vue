@@ -17,7 +17,7 @@
 <template>
   <aside class="sidebar" v-bind:class="{'sidebar--toggled': sideBarActive }">
     <div class="logo">
-      <img class="logo__img" src='/img/logo-dark.svg' alt="" />
+      <img class="logo__img" src='/minio/logo-dark.svg' alt="" />
       <div class="logo__title">
         <h2>Minio Browser</h2>
         <small>{{ host }}</small>
