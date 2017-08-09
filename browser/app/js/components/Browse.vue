@@ -271,14 +271,14 @@ import Preview from './Preview.vue'
 import ObjectsList from './ObjectsList.vue'
 import SideBar from './SideBar.vue'
 import Policy from './Policy.vue'
+import PolicyInput from './PolicyInput.vue'
+import ConfirmModal from './modals/ConfirmModal.vue'
+
 
 /*import Dropzone from '../components/Dropzone'*/
 import UploadModal from '../components/modals/UploadModal'
 import SettingsModal from '../components/modals/SettingsModal'
-import PolicyInput from '../components/PolicyInput'
-import ConfirmModal from '../components/ConfirmModal'
 
-import * as actions from '../actions'
 import * as utils from '../utils'
 import * as mime from '../mime'
 import { minioBrowserPrefix } from '../constants'

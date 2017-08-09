@@ -82,7 +82,7 @@ export default {
 
     usage: function() {
       // TODO get real figures
-      const total = 00
+      const total = 0
       const free = 12
       const used = total - free
 

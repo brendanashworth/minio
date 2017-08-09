@@ -15,12 +15,16 @@
  !-->
 
 <template>
-  <div class="policy__list">
+  <header class="policy__list">
     <div class="policy__item">
-      {{ newPrefix }}
+      <div class="form-group">
+        <input type="text"
+          v-model="prefix" class="form-group__field form-group__field--sm" placeholder="Prefix" />
+        <i class="form-group__bar" />
+      </div>
     </div>
     <div class="policy__item">
-      <select disabled value={{ policy }} v-on:change="changePolicy">
+      <select v-model="policy" class="form-group__field form-group__field--sm">
         <option value={ READ_ONLY }>
           Read Only
         </option>
@@ -33,57 +37,68 @@
       </select>
     </div>
     <div class="policy__item">
-      <button class="btn btn--block btn--danger" v-on:click="removePolicy">
-        Remove
+      <button class="btn btn--block btn--primary" onClick={ this.handlePolicySubmit.bind(this) }>
+        Add
       </button>
     </div>
-  </div>
+  </header>
 </template>
 
 <script>
 import { READ_ONLY, WRITE_ONLY, READ_WRITE } from '../constants'
 
 export default {
-  name: 'Policy',
-
-  props: ['prefix', 'policy'],
+  name: 'PolicyInput',
 
   computed: {
-    newPrefix: function() {
-      let newPrefix = this.prefix.replace(currentBucket + '/', '')
-      newPrefix = newPrefix.replace('*', '')
+    policies: function() {
+      return this.$store.state.policies
 
-      if (!newPrefix)
-        newPrefix = '*'
+      /*
+        componentDidMount() {
+    const {web, dispatch} = this.props
+    web.ListAllBucketPolicies({
+      bucketName: this.props.currentBucket
+    }).then(res => {
+      let policies = res.policies
+      if (policies) dispatch(actions.setPolicies(policies))
+    }).catch(err => {
+      dispatch(actions.showAlert({
+        type: 'danger',
+        message: err.message
+      }))
+    })
+    */
     }
   },
 
   methods: {
-    changePolicy: function(e) {
-      // TODO mutate policy
-    },
-
-    removePolicy: function(e) {
+    addPolicy: function() {
       const currentBucket = this.$store.state.currentBucket
+      const prefix = this.prefix
+      const policy = this.policy
 
-      let newPrefix = this.prefix.replace(currentBucket + '/', '')
-      newPrefix = newPrefix.replace('*', '')
+      const state = this.$store.state
 
-      web.SetBucketPolicy({
+      state.web.SetBucketPolicy({
         bucketName: currentBucket,
-        prefix: newPrefix,
-        policy: 'none'
+        prefix, policy
       })
         .then(() => {
-          this.$store.state.policies = this.props.policies.filter(policy => policy.prefix != this.prefix)
+          state.policies = state.policies.concat([{
+            prefix: prefix + '*',
+            policy
+          }])
+
+          this.prefix = ''
         })
-        .catch(e => function() {
-          this.$store.commit('setAlert', {
+        .catch(e => {
+          state.commit('setAlert', {
             type: 'danger',
             message: e.message
           })
         })
-    },
+    }
   }
 }
 </script>
