@@ -74,17 +74,18 @@ export default {
       }
 
       this.hideAbort()
-    }
+    },
 
     // Show the abort modal instead of the progress modal.
     showAbort: function() {
       this.showAbortModal = true
-    }
+    },
 
     // Show the progress modal instead of the abort modal.
     hideAbort: function() {
       this.showAbortModal = false
     }
+  },
 
   computed: {
     uploads: function() {
