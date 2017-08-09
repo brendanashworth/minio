@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import humanize from 'humanize'
+import filesize from 'file-size'
 
 export default {
   computed: {
@@ -88,8 +88,8 @@ export default {
 
       return {
         total, free, used,
-        humanUsed: humanize.filesystem(used),
-        humanTotal: humanize.filesystem(total),
+        humanUsed: filesize(used),
+        humanTotal: filesize(total),
         usedPercent: used / total
       }
     }

@@ -262,7 +262,6 @@
 </template>
 
 <script>
-import humanize from 'humanize'
 import storage from 'local-storage-fallback'
 
 import Path from './Path.vue'

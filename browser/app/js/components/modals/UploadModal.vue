@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import humanize from 'humanize'
+import filesize from 'file-size'
 
 import ConfirmModal from './ConfirmModal.vue'
 
@@ -56,8 +56,8 @@ import ConfirmModal from './ConfirmModal.vue'
 export default {
   name: 'UploadModal',
 
-  data: {
-    showAbortModal: false
+  data: function() {
+    return { showAbortModal: false }
   },
 
   methods: {
@@ -113,7 +113,7 @@ export default {
 
       return {
         text, percent,
-        total: humanize.filesystem(totalLoaded),
+        total: filesize(totalLoaded),
         percentRounded: percent.toFixed(2)
       }
     }

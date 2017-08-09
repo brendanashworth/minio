@@ -43,7 +43,7 @@
 
 <script>
 import Moment from 'moment'
-import humanize from 'humanize'
+import filesize from 'file-size'
 
 import MaterialDesignIconicFonts from 'material-design-iconic-font/dist/css/material-design-iconic-font.min.css'
 
@@ -57,7 +57,7 @@ export default {
 
       return objects.map((object, i) => {
         // Gives data about each object.
-        let size = object.name.endsWith('/') ? '' : humanize.filesize(object.size)
+        let size = object.name.endsWith('/') ? '' : filesize(object.size)
         let lastModified = object.name.endsWith('/') ? '' : Moment(object.lastModified).format('lll')
         let path = currentPath + object.name
         let type = mime.getDataType(object.name, object.contentType)
