@@ -234,47 +234,6 @@ export default {
   })),
 
   methods: {
-    componentWillMount: function() {
-      const {dispatch} = this.props
-      // Clear out any stale message in the alert of Login page
-      dispatch(actions.showAlert({
-        type: 'danger',
-        message: ''
-      }))
-      if (web.LoggedIn()) {
-        web.ListBuckets()
-          .then(res => {
-            let buckets
-            if (!res.buckets)
-              buckets = []
-            else
-              buckets = res.buckets.map(bucket => bucket.name)
-            if (buckets.length) {
-              dispatch(actions.setBuckets(buckets))
-              dispatch(actions.setVisibleBuckets(buckets))
-              if (location.pathname === minioBrowserPrefix || location.pathname === minioBrowserPrefix + '/') {
-                browserHistory.push(utils.pathJoin(buckets[0]))
-              }
-            }
-          })
-      }
-      this.history = browserHistory.listen(({pathname}) => {
-        let decPathname = decodeURI(pathname)
-        if (decPathname === `${minioBrowserPrefix}/login`) return // FIXME: better organize routes and remove this
-        if (!decPathname.endsWith('/'))
-          decPathname += '/'
-        if (decPathname === minioBrowserPrefix + '/') {
-          return
-        }
-        let obj = utils.pathSlice(decPathname)
-        if (!web.LoggedIn()) {
-          dispatch(actions.setBuckets([obj.bucket]))
-          dispatch(actions.setVisibleBuckets([obj.bucket]))
-        }
-        dispatch(actions.selectBucket(obj.bucket, obj.prefix))
-      })
-    },
-
     componentWillUnmount: function() {
       this.history()
     },
@@ -453,8 +412,10 @@ export default {
       dispatch(actions.setSortDateOrder(!sortDateOrder))
     },
 
-    toggleSidebar: function(status) {
-      this.props.dispatch(actions.setSidebarStatus(status))
+    toggleSidebar: function() {
+      const old = this.$store.state.sideBarActive
+
+      this.$store.state.sideBarActive = !old
     },
 
     hideSidebar: function(event) {
@@ -528,25 +489,6 @@ export default {
                         Upload Folder
                       </Tooltip>,
       }
-
-      let browserDropdownButton = ''
-      let storageUsageDetails = ''
-
-      let used = total - free
-      let usedPercent = (used / total) * 100 + '%'
-
-      if (web.LoggedIn()) {
-        browserDropdownButton =
-      }
-
-      if (web.LoggedIn()) {
-        storageUsageDetails =
-      }
-
-      let createButton = ''
-      if (web.LoggedIn()) {
-        createButton =
-
       } else {
         if (prefixWritable)
           createButton = <Dropdown dropup class="create-new" id="dropdown-create-new">

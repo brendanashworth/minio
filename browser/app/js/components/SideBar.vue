@@ -140,6 +140,12 @@ export default {
           }))
         })
     }
-  }
+  },
+
+  // created is a lifecycle hook that will fire when the SideBar is created.
+  created() {
+    // They don't load by themselves, you know.
+    this.$store.dispatch('loadBuckets')
+  },
 }
 </script>

@@ -100,8 +100,13 @@ export const store = new Vuex.Store({
     },
 
     addBucket(state, bucket) {
-      state.buckets.push(bucket)
-      state.visibleBuckets.push(bucket)
+      state.buckets = [bucket].concat(state.buckets)
+      state.visibleBuckets = [bucket].concat(state.visibleBuckets)
+    },
+
+    setBuckets(state, buckets) {
+      state.buckets = buckets
+      state.visibleBuckets = buckets
     },
 
     // Adds objects into the object list.
@@ -232,6 +237,29 @@ export const store = new Vuex.Store({
           })
         })
         .catch(err => state.dispatch('error', err))
+    },
+
+    loadBuckets: function(context, fallback) {
+      if (!context.getters.isLoggedIn) {
+        // If we aren't logged in, we'll get a fallback bucket to list. This
+        // allows a user to specify a read-only (etc) bucket to browse without
+        // having access credentials.
+
+        context.commit('setBuckets', [fallback])
+        // TODO dispatch(actions.selectBucket(obj.bucket, obj.prefix))
+        return
+      }
+
+      context.state.web.ListBuckets()
+        .then(res => {
+          if (!res.buckets)
+            return
+
+          const buckets = res.buckets.map(bucket => bucket.name)
+
+          context.commit('setBuckets', buckets)
+        })
+        .catch(err => context.dispatch('error', err))
     }
   }
 })
