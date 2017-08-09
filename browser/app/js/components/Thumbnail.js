@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/*
 import React from 'react'
 import connect from 'react-redux/lib/components/connect'
 import storage from 'local-storage-fallback'
@@ -127,4 +127,4 @@ export default connect(state => {
   return {
     previewStatus: state.previewStatus
   }
-})(Thumbnail)
+})(Thumbnail)*/

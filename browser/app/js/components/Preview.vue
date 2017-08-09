@@ -22,7 +22,7 @@
     </div>
     <div class="preview__body">
       <div class="preview__item preview__item--img">
-        <Thumbnail />
+        <!--<Thumbnail />-->
       </div>
       <div class="preview__info">
         <dl>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import Thumbnail from './Thumbnail'
+/*import Thumbnail from './Thumbnail'*/
 
 // Preview is the side panel for previewing info about objects.
 export default {

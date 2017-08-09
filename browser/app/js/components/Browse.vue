@@ -272,11 +272,12 @@ import ObjectsList from './ObjectsList.vue'
 import SideBar from './SideBar.vue'
 import Policy from './Policy.vue'
 import PolicyInput from './PolicyInput.vue'
+
 import ConfirmModal from './modals/ConfirmModal.vue'
+import UploadModal from './modals/UploadModal.vue'
 
 
 /*import Dropzone from '../components/Dropzone'*/
-import UploadModal from '../components/modals/UploadModal'
 import SettingsModal from '../components/modals/SettingsModal'
 
 import * as utils from '../utils'
