@@ -65,7 +65,11 @@ import { minioBrowserPrefix } from '../constants'
 export default {
   data: function() {
     return {
-      searchQuery: ''
+      searchQuery: '',
+      storage: {
+        total: 0,
+        free: 0
+      }
     }
   },
 
@@ -93,16 +97,15 @@ export default {
     },
 
     usage: function() {
-      // TODO get real figures
-      const total = 50 * 1024
-      const free = 12.3 * 1024
+      const total = this.storage.total
+      const free = this.storage.free
       const used = total - free
 
       return {
         total, free, used,
         humanUsed: filesize(used).human(),
         humanTotal: filesize(total).human(),
-        usedPercent: used / total
+        usedPercent: ((used / total) * 100) + '%'
       }
     }
   },
@@ -147,6 +150,19 @@ export default {
             message: message
           }))
         })
+    },
+
+    loadStorageInfo: function() {
+      const web = this.$store.state.web
+
+      web.StorageInfo()
+        .then(res => {
+          this.storage = {
+            total: res.storageInfo.Total,
+            free: res.storageInfo.Free
+          }
+        })
+        .catch(err => this.$store.dispatch('error', err))
     }
   },
 
@@ -161,8 +177,9 @@ export default {
 
   // created is a lifecycle hook that will fire when the SideBar is created.
   created() {
-    // They don't load by themselves, you know.
     this.$store.dispatch('loadBuckets')
+
+    this.loadStorageInfo()
   },
 }
 </script>

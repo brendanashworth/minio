@@ -32,7 +32,6 @@ export const store = new Vuex.Store({
     visibleBuckets: [],
     objects: [],
     istruncated: true,
-    storageInfo: {},
     serverInfo: {},
     currentBucket: '',
     currentPath: '',
@@ -148,10 +147,6 @@ export const store = new Vuex.Store({
       let index = state.checkedObjects.indexOf(object)
 
       state.checkedObjects = state.checkedObjects.filter((e, i) => i != index)
-    },
-
-    setStorageInfo(state, info) {
-      state.storageInfo = info
     },
 
     setServerInfo(state, info) {
