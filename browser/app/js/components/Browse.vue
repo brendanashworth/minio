@@ -29,68 +29,57 @@
           <div class="actions">
             <button class="zmdi zmdi-menu" v-on:click="toggleSidebar" />
             <button class="zmdi zmdi-view-comfy" />
-            <button v-on:click="showDeleteConfirmation" disabled={ checkedObjects.length == 0 } class="zmdi zmdi-delete" />
-            <button v-on:click="shareObject" disabled={ checkedObjects.length != 1 } class="zmdi zmdi-share" />
-            <button v-on:click="downloadSelected" disabled={ checkedObjects.length == 0 } class="zmdi zmdi-download" />
+            <button v-on:click="showDeleteConfirmation" v-bind:disabled="checkedObjects.length == 0" class="zmdi zmdi-delete" />
+            <button v-on:click="shareObject" v-bind:disabled="checkedObjects.length != 1" class="zmdi zmdi-share" />
+            <button v-on:click="downloadSelected" v-bind:disabled="checkedObjects.length == 0" class="zmdi zmdi-download" />
           </div>
           <!-- TODO only if not logged in -->
           <a class="btn btn-danger" href='/minio/login'>Login</a>
           <!-- else -->
-          <BrowserDropdown />
+          <browser-dropdown />
         </div>
 
-        <Path />
+        <breadcrumb-path />
       </header>
 
-      <SideBar />
+      <side-bar />
 
       <div class="objects">
         <header class="objects__row" data-type="folder">
           <div class="objects__item objects__item--name" v-on:click="sortObjectsByName" data-sort="name">
             Name
-            <i className={ classNames({
-                             'objects__item__sort': true,
-                             'zmdi': true,
-                             'zmdi-sort-desc': sortNameOrder,
-                             'zmdi-sort-asc': !sortNameOrder
-                           }) } />
+            <i class="objects__item__sort zmdi" v-bind:class="{ 'zmdi-sort-desc': sortNameOrder, 'zmdi-sort-asc': !sortNameOrder }" />
           </div>
           <div class="objects__item objects__item--size" v-on:click="sortObjectsBySize" data-sort="size">
             Size
-            <i className={ classNames({
-                             'objects__item__sort': true,
-                             'zmdi': true,
-                             'zmdi-sort-amount-desc': sortSizeOrder,
-                             'zmdi-sort-amount-asc': !sortSizeOrder
-                           }) } />
+            <i class="objects__item__sort zmdi" v-bind:class="{ 'zmdi-sort-amount-desc': sortSizeOrder, 'zmdi-sort-amount-asc': !sortSizeOrder }" />
           </div>
           <div class="objects__item objects__item--modified" v-on:click="sortObjectsByDate" data-sort="last-modified">
             Last Modified
-            <i className={ classNames({
-                             'objects__item__sort': true,
-                             'zmdi': true,
-                             'zmdi-sort-amount-desc': sortDateOrder,
-                             'zmdi-sort-amount-asc': !sortDateOrder
-                           }) } />
+            <i class="objects__item__sort zmdi" v-bind:class="{ 'zmdi-sort-amount-desc': sortDateOrder, 'zmdi-sort-amount-asc': !sortDateOrder }" />
           </div>
         </header>
         <div class="objects__container">
-          <!--<Dropzone>-->
+          <!--<Dropzone>--
             <InfiniteScroll loadMore={ this.listObjects.bind(this) }
               hasMore={ istruncated }
               useWindow={ true }
-              initialLoad={ false }>
-              <ObjectsList />
-            </InfiniteScroll>
+              initialLoad={ false }>-->
+              <objects-list />
+            <!--</InfiniteScroll>
             <div class="text-center" style={ { display: (istruncated && currentBucket) ? 'block' : 'none' } }>
               <span>Loading...</span>
             </div>
           <!--</Dropzone>-->
         </div>
       </div>
-      <Preview />
-      <UploadModal />
+
+      <object-preview />
+
+      <upload-modal />
+
       { createButton }
+
       <Modal class="create-bucket"
         bsSize="small"
         animation={ false }
@@ -156,11 +145,11 @@
           <i class="close close--dark" v-on:click="hideBucketPolicy">×</i>
         </ModalHeader>
         <div class="policy__body">
-          <PolicyInput bucket={ currentBucket } />
-          { policies.map((policy, i) => <Policy prefix={ policy.prefix } policy={ policy.policy } />) }
+          <policy-input bucket={ currentBucket } />
+          { policies.map((policy, i) => <policy prefix={ policy.prefix } policy={ policy.policy } />) }
         </div>
       </Modal>
-      <ConfirmModal show={ deleteConfirmation.show }
+      <confirm-modal show={ deleteConfirmation.show }
         icon={ 'zmdi-alert-polygon c-red' }
         text='Are you sure you want to delete?'
         sub='This cannot be undone!'
@@ -168,7 +157,7 @@
         cancelText='Cancel'
         okHandler={ this.removeObject.bind(this) }
         cancelHandler={ this.hideDeleteConfirmation.bind(this) }>
-      </ConfirmModal>
+      </confirm-modal>
       <Modal show={ shareObject.show }
         animation={ false }
         onHide={ this.hideShareObjectModal.bind(this) }
@@ -240,18 +229,18 @@
           </div>
         </ModalBody>
         <div class="modal-footer">
-          <CopyToClipboard text={ window.location.protocol + '//' + shareObject.url } onCopy={ this.showMessage.bind(this) }>
+          <!--<CopyToClipboard text={ window.location.protocol + '//' + shareObject.url } onCopy={ this.showMessage.bind(this) }>-->
             <button class="btn btn--link">
               Copy Link
             </button>
-          </CopyToClipboard>
+          <!--</CopyToClipboard>-->
           <button class="btn btn--link" v-on:click="hideShareObjectModal">
             Cancel
           </button>
         </div>
       </Modal>
 
-      <SettingsModal />
+      <settings-modal />
 
       <div className={ classNames({
                          "sidebar-backdrop": true,
@@ -290,9 +279,32 @@ import InfiniteScroll from 'react-infinite-scroller';
 import logoInvert from '../../img/logo-dark.svg'
 
 export default {
+  name: 'Browse',
+
+  components: {
+    'breadcrumb-path': Path,
+    'browser-dropdown': BrowserDropdown,
+    'object-preview': Preview,
+    'objects-list': ObjectsList,
+    'side-bar': SideBar,
+    'policy': Policy,
+    'policy-input': PolicyInput,
+    'confirm-modal': ConfirmModal,
+    'upload-modal': UploadModal,
+    'settings-modal': SettingsModal
+  },
+
   computed: {
+    loggedIn() {
+      return this.$store.state.web.LoggedIn()
+    },
+
     alert() {
       return this.$store.state.alert
+    },
+
+    checkedObjects() {
+      return this.$store.state.checkedObjects
     }
   },
 
