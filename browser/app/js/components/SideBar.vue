@@ -20,7 +20,7 @@
       <img className="logo__img" src='/img/logo-dark.svg' alt="" />
       <div className="logo__title">
         <h2>Minio Browser</h2>
-        <small>{{ window.location.host }}</small>
+        <small>{{ host }}</small>
       </div>
     </div>
     <div className="buckets">
@@ -74,6 +74,10 @@ export default {
 
         return bucket
       })
+    },
+
+    host: function() {
+      return window.location.host
     },
 
     sideBarActive: function() {

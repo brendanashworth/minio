@@ -35,11 +35,11 @@
         <span>×</span>
       </button>
       <div class="text-center">
-        <small>{{ text }}</small>
+        <small>{{ uploads.text }}</small>
       </div>
-      <ProgressBar v-bind:now="{ percent }" />
+      <ProgressBar v-bind:now="uploads.percent" />
       <div class="text-center">
-        <small>{{ totalLoaded }} ({{ percentRounded }} %)</small>
+        <small>{{ uploads.totalLoaded }} ({{ uploads.percentRounded }} %)</small>
       </div>
     </div>
   </div>

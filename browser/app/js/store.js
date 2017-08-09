@@ -161,6 +161,14 @@ export const store = new Vuex.Store({
 
   // Actions are asynchronous state-changing events.
   actions: {
+    // error is a shorthand for showAlert() with an Error type.
+    error(context, err) {
+      context.dispatch('showAlert', {
+        type: 'danger',
+        message: err.message
+      })
+    },
+
     // showAlert triggers an alert that will automatically close if it is
     // a non-error.
     showAlert(context, alert) {

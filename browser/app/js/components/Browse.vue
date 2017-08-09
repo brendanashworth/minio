@@ -23,7 +23,7 @@
        </div>
      </b-alert>
 
-    <section class='content' v-bind:class="{ 'content--toggled': sidebarStatus }">
+    <section class='content' v-bind:class="{ 'content--toggled': sideBarActive }">
       <header class="header">
         <div class="toolbar">
           <div class="actions">
@@ -107,34 +107,9 @@
           </form>
         </ModalBody>
       </Modal>
-      <Modal animation={ false } show={ showAbout } onHide={ this.hideAbout.bind(this) }>
-        <i class="close close--dark" v-on:click="hideAbout">×</i>
-        <div class="about">
-          <div class="about__logo">
-            <img src={ logoInvert } alt="" />
-          </div>
-          <div class="about__content">
-            <dl class="about__info">
-              <dt>Version</dt>
-              <dd>
-                { version }
-              </dd>
-              <dt>Memory</dt>
-              <dd>
-                { memory }
-              </dd>
-              <dt>Platform</dt>
-              <dd>
-                { platform }
-              </dd>
-              <dt>Runtime</dt>
-              <dd>
-                { runtime }
-              </dd>
-            </dl>
-          </div>
-        </div>
-      </Modal>
+
+      <about-modal />
+
       <Modal class="policy"
         animation={ false }
         show={ showBucketPolicy }
@@ -244,7 +219,7 @@
 
       <div className={ classNames({
                          "sidebar-backdrop": true,
-                         "sidebar-backdrop--toggled": sidebarStatus
+                         "sidebar-backdrop--toggled": sideBarActive
                        }) } v-on:click="hideSidebar" />
     </section>
   </section>
@@ -264,12 +239,15 @@ import PolicyInput from './PolicyInput.vue'
 import ConfirmModal from './modals/ConfirmModal.vue'
 import UploadModal from './modals/UploadModal.vue'
 import SettingsModal from './modals/SettingsModal.vue'
+import AboutModal from './modals/AboutModal.vue'
 
 /*import Dropzone from '../components/Dropzone'*/
 
 import * as utils from '../utils'
 import * as mime from '../mime'
 import { minioBrowserPrefix } from '../constants'
+
+import { mapState } from 'vuex'
 
 /*
 import CopyToClipboard from 'react-copy-to-clipboard'
@@ -291,55 +269,27 @@ export default {
     'policy-input': PolicyInput,
     'confirm-modal': ConfirmModal,
     'upload-modal': UploadModal,
-    'settings-modal': SettingsModal
+    'settings-modal': SettingsModal,
+    'about-modal': AboutModal
   },
 
-  computed: {
+  computed: Object.assign({
     loggedIn() {
       return this.$store.state.web.LoggedIn()
     },
+  }, mapState({
+    alert: state => state.alert,
 
-    alert() {
-      return this.$store.state.alert
-    },
+    checkedObjects: state => state.checkedObjects,
 
-    checkedObjects() {
-      return this.$store.state.checkedObjects
-    }
-  },
+    sideBarActive: state => state.sideBarActive,
+
+    sortNameOrder: state => state.sortNameOrder,
+    sortSizeOrder: state => state.sortSizeOrder,
+    sortDateOrder: state => state.sortDateOrder
+  })),
 
   methods: {
-    componentDidMount: function() {
-      const {web, dispatch, currentBucket} = this.props
-      if (!web.LoggedIn()) return
-      web.StorageInfo()
-        .then(res => {
-          let storageInfo = Object.assign({}, {
-            total: res.storageInfo.Total,
-            free: res.storageInfo.Free
-          })
-          storageInfo.used = storageInfo.total - storageInfo.free
-          dispatch(actions.setStorageInfo(storageInfo))
-          return web.ServerInfo()
-        })
-        .then(res => {
-          let serverInfo = Object.assign({}, {
-            version: res.MinioVersion,
-            memory: res.MinioMemory,
-            platform: res.MinioPlatform,
-            runtime: res.MinioRuntime,
-            info: res.MinioGlobalInfo
-          })
-          dispatch(actions.setServerInfo(serverInfo))
-        })
-        .catch(err => {
-          dispatch(actions.showAlert({
-            type: 'danger',
-            message: err.message
-          }))
-        })
-    },
-
     componentWillMount: function() {
       const {dispatch} = this.props
       // Clear out any stale message in the alert of Login page
