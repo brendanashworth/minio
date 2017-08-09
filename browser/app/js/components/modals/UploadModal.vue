@@ -29,7 +29,7 @@
       v-on:cancel="hideAbort">
     </confirm-modal>
 
-    <div class="alert alert-info progress animated fadeInUp">
+    <div v-else-if="isUploading" class="alert alert-info progress animated fadeInUp">
       <button type="button" class="close" v-on:click="showAbort">
         <span>×</span>
       </button>
@@ -91,6 +91,12 @@ export default {
   },
 
   computed: {
+    isUploading: function() {
+      const uploads = this.$store.state.uploads
+
+      return uploads.length > 0
+    },
+
     uploads: function() {
       const uploads = this.$store.state.uploads
 

@@ -127,7 +127,7 @@
         </ModalBody>
       </Modal>
 
-      <about-modal />-->
+      --><about-modal /><!--
 
       <!--
       <Modal class="policy"
