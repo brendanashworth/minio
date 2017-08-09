@@ -29,7 +29,6 @@ export const store = new Vuex.Store({
   state: {
     web: null,
     buckets: [],
-    visibleBuckets: [],
     objects: [],
     istruncated: true,
     serverInfo: {},
@@ -103,17 +102,10 @@ export const store = new Vuex.Store({
 
     addBucket(state, bucket) {
       state.buckets = [bucket].concat(state.buckets)
-      state.visibleBuckets = [bucket].concat(state.visibleBuckets)
     },
 
     setBuckets(state, buckets) {
       state.buckets = buckets
-      state.visibleBuckets = buckets
-    },
-
-    // Filters the visible buckets based on the given filter.
-    filterBuckets(state, filter) {
-      state.visibleBuckets = state.buckets.filter(filter)
     },
 
     // Adds objects into the object list.

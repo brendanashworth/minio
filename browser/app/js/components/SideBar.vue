@@ -77,7 +77,10 @@ export default {
     buckets: function() {
       const currentBucket = this.$store.state.currentBucket
 
-      return this.$store.state.visibleBuckets.map(bucket => {
+      return this.$store.state.buckets.filter(bucket => {
+        // Simple search algorithm: if it contains our search query, show it.
+        return bucket.indexOf(this.searchQuery) != -1
+      }).map(bucket => {
         // Convert it into an object with the relevant fields.
         bucket = { name: bucket }
 
@@ -163,15 +166,6 @@ export default {
           }
         })
         .catch(err => this.$store.dispatch('error', err))
-    }
-  },
-
-  watch: {
-    searchQuery: function(query) {
-      this.$store.commit('filterBuckets', bucket => {
-        // Simple search algorithm: if it contains our search query, show it.
-        return bucket.indexOf(query) != -1
-      })
     }
   },
 
