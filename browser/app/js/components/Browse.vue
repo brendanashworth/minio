@@ -76,8 +76,9 @@
 
       <object-preview />
 
-      <!--<upload-modal />
+      <upload-modal />
 
+      <!--
       <Dropdown v-if="isLoggedIn" dropup class="create-new" id="dropdown-create-new">
         <Dropdown.Toggle noCaret class="create-new__toggle">
           <i class="zmdi zmdi-plus"></i>

@@ -16,8 +16,7 @@
 
 <template>
   <div>
-    <ConfirmModal v-if="showAbortModal"
-      show
+    <confirm-modal v-if="showAbortModal"
       baseClass='abort-upload'
       text='Abort uploads in progress?'
       icon='fa fa-info-circle mci-amber'
@@ -26,18 +25,18 @@
       okIcon='fa fa-times'
       cancelText='Upload'
       cancelIcon='fa fa-cloud-upload'
-      ok={{ abortUploads }}
-      cancel={{ hideAbort }}>
-    </ConfirmModal>
+      v-on:ok="abortUploads"
+      v-on:cancel="hideAbort">
+    </confirm-modal>
 
-    <div v-else class="alert alert-info progress animated fadeInUp">
-      <button type="button" class="close" v-on:click="showAbort" }>
+    <div class="alert alert-info progress animated fadeInUp">
+      <button type="button" class="close" v-on:click="showAbort">
         <span>×</span>
       </button>
       <div class="text-center">
         <small>{{ uploads.text }}</small>
       </div>
-      <ProgressBar v-bind:now="uploads.percent" />
+      <b-progress v-model="uploads.percent" />
       <div class="text-center">
         <small>{{ uploads.totalLoaded }} ({{ uploads.percentRounded }} %)</small>
       </div>
@@ -55,6 +54,10 @@ import ConfirmModal from './ConfirmModal.vue'
 // abort modal if the user decides to abort the uploads.
 export default {
   name: 'UploadModal',
+
+  components: {
+    'confirm-modal': ConfirmModal
+  },
 
   data: function() {
     return { showAbortModal: false }

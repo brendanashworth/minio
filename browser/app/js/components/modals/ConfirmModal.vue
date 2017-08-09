@@ -16,7 +16,7 @@
 
 <template>
   <b-modal bsSize="small" ok-title={{ okText }} cancel-title={{ cancelText }}
-    @ok="ok" @cancel="cancel" class="modal--confirm">
+    @ok="okHandler" @cancel="cancelHandler" class="modal--confirm">
     <div class="modal--confirm__icon">
       <i class="zmdi" v-bind:class="{ icon }" />
     </div>
@@ -31,9 +31,20 @@
 
 
 <script>
+// ConfirmModal opens a confirm modal, with events 'ok' and 'cancel'.
 export default {
   name: 'ConfirmModal',
 
-  props: ['cancelText', 'cancel', 'okText', 'ok', 'sub', 'text', 'icon']
+  props: ['cancelText', 'okText', 'sub', 'text', 'icon'],
+
+  methods: {
+    okHandler: function() {
+      this.$emit('ok')
+    },
+
+    cancelHandler: function() {
+      this.$emit('cancel')
+    }
+  }
 }
 </script>
