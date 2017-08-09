@@ -109,6 +109,11 @@ export const store = new Vuex.Store({
       state.visibleBuckets = buckets
     },
 
+    // Filters the visible buckets based on the given filter.
+    filterBuckets(state, filter) {
+      state.visibleBuckets = state.buckets.filter(filter)
+    },
+
     // Adds objects into the object list.
     appendObjects(state, {objects, marker, istruncated}) {
       newState.objects = state.objects.concat(objects)

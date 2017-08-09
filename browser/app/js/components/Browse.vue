@@ -238,18 +238,6 @@ export default {
       this.history()
     },
 
-    selectBucket: function(e, bucket) {
-      e.preventDefault()
-      if (bucket === this.props.currentBucket) return
-      browserHistory.push(utils.pathJoin(bucket))
-    },
-
-    searchBuckets: function(e) {
-      e.preventDefault()
-      let {buckets} = this.props
-      this.props.dispatch(actions.setVisibleBuckets(buckets.filter(bucket => bucket.indexOf(e.target.value) > -1)))
-    },
-
     listObjects: function() {
       const {dispatch} = this.props
       dispatch(actions.listObjects())
@@ -289,7 +277,6 @@ export default {
       })
         .then(() => {
           this.$store.state.commit('addBucket', bucketName)
-          this.$store.state.commit('selectBucket', bucketName)
         })
         .catch(err => this.$store.state.dispatch('error', err))
     },

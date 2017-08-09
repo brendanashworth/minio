@@ -28,7 +28,7 @@
         <div class="form-group">
           <input class="form-group__field"
             type="text"
-            v-on:change="searchBuckets"
+            v-model="searchQuery"
             placeholder="Search Buckets..." />
           <i class="form-group__bar"></i>
         </div>
@@ -60,7 +60,15 @@
 <script>
 import filesize from 'file-size'
 
+import { minioBrowserPrefix } from '../constants'
+
 export default {
+  data: function() {
+    return {
+      searchQuery: ''
+    }
+  },
+
   computed: {
     buckets: function() {
       const currentBucket = this.$store.state.currentBucket
@@ -104,8 +112,8 @@ export default {
       // TODO
     },
 
-    selectBucket: function() {
-      // TODO
+    selectBucket: function(bucket) {
+      this.$router.push(minioBrowserPrefix + '/bucket/' + bucket.name)
     },
 
     searchBuckets: function() {
@@ -139,6 +147,15 @@ export default {
             message: message
           }))
         })
+    }
+  },
+
+  watch: {
+    searchQuery: function(query) {
+      this.$store.commit('filterBuckets', bucket => {
+        // Simple search algorithm: if it contains our search query, show it.
+        return bucket.indexOf(query) != -1
+      })
     }
   },
 
