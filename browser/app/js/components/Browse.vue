@@ -34,7 +34,7 @@
             <button v-on:click="downloadSelected" disabled={ checkedObjects.length == 0 } class="zmdi zmdi-download" />
           </div>
           <!-- TODO only if not logged in -->
-          <a className='btn btn-danger' href='/minio/login'>Login</a>
+          <a class="btn btn-danger" href='/minio/login'>Login</a>
           <!-- else -->
           <BrowserDropdown />
         </div>
@@ -55,7 +55,7 @@
                              'zmdi-sort-asc': !sortNameOrder
                            }) } />
           </div>
-          <div className="objects__item objects__item--size" v-on:click="sortObjectsBySize" data-sort="size">
+          <div class="objects__item objects__item--size" v-on:click="sortObjectsBySize" data-sort="size">
             Size
             <i className={ classNames({
                              'objects__item__sort': true,
@@ -64,7 +64,7 @@
                              'zmdi-sort-amount-asc': !sortSizeOrder
                            }) } />
           </div>
-          <div className="objects__item objects__item--modified" v-on:click="sortObjectsByDate" data-sort="last-modified">
+          <div class="objects__item objects__item--modified" v-on:click="sortObjectsByDate" data-sort="last-modified">
             Last Modified
             <i className={ classNames({
                              'objects__item__sort': true,
@@ -74,7 +74,7 @@
                            }) } />
           </div>
         </header>
-        <div className="objects__container">
+        <div class="objects__container">
           <!--<Dropzone>-->
             <InfiniteScroll loadMore={ this.listObjects.bind(this) }
               hasMore={ istruncated }
@@ -82,7 +82,7 @@
               initialLoad={ false }>
               <ObjectsList />
             </InfiniteScroll>
-            <div className="text-center" style={ { display: (istruncated && currentBucket) ? 'block' : 'none' } }>
+            <div class="text-center" style={ { display: (istruncated && currentBucket) ? 'block' : 'none' } }>
               <span>Loading...</span>
             </div>
           <!--</Dropzone>-->
@@ -91,27 +91,27 @@
       <Preview />
       <UploadModal />
       { createButton }
-      <Modal className="create-bucket"
+      <Modal class="create-bucket"
         bsSize="small"
         animation={ false }
         show={ showMakeBucketModal }
         onHide={ this.hideMakeBucketModal.bind(this) }>
         <ModalBody>
           <form onSubmit={ this.makeBucket.bind(this) }>
-            <div className="form-group">
-              <label className="form-group__label">
+            <div class="form-group">
+              <label class="form-group__label">
                 Create new bucket
               </label>
-              <input className="form-group__field"
+              <input class="form-group__field"
                 type="text"
                 ref="makeBucketRef"
                 placeholder="e.g documents"
                 autoFocus/>
-              <i className="form-group__bar" />
+              <i class="form-group__bar" />
             </div>
-            <div className="text-right">
-              <input type="submit" className="btn btn--link" value="Create" />
-              <button className="btn btn--link" v-on:click="hideMakeBucketModal">
+            <div class="text-right">
+              <input type="submit" class="btn btn--link" value="Create" />
+              <button class="btn btn--link" v-on:click="hideMakeBucketModal">
                 Cancel
               </button>
             </div>
@@ -119,13 +119,13 @@
         </ModalBody>
       </Modal>
       <Modal animation={ false } show={ showAbout } onHide={ this.hideAbout.bind(this) }>
-        <i className="close close--dark" v-on:click="hideAbout">×</i>
-        <div className="about">
-          <div className="about__logo">
+        <i class="close close--dark" v-on:click="hideAbout">×</i>
+        <div class="about">
+          <div class="about__logo">
             <img src={ logoInvert } alt="" />
           </div>
-          <div className="about__content">
-            <dl className="about__info">
+          <div class="about__content">
+            <dl class="about__info">
               <dt>Version</dt>
               <dd>
                 { version }
@@ -146,18 +146,18 @@
           </div>
         </div>
       </Modal>
-      <Modal className="policy"
+      <Modal class="policy"
         animation={ false }
         show={ showBucketPolicy }
         onHide={ this.hideBucketPolicy.bind(this) }>
         <ModalHeader>
           Bucket Policy
-          <small className="modal-header__sub">({ currentBucket })</small>
-          <i className="close close--dark" v-on:click="hideBucketPolicy">×</i>
+          <small class="modal-header__sub">({ currentBucket })</small>
+          <i class="close close--dark" v-on:click="hideBucketPolicy">×</i>
         </ModalHeader>
-        <div className="policy__body">
+        <div class="policy__body">
           <PolicyInput bucket={ currentBucket } />
-          { policies.map((policy, i) => <Policy key={ i } prefix={ policy.prefix } policy={ policy.policy } />) }
+          { policies.map((policy, i) => <Policy prefix={ policy.prefix } policy={ policy.policy } />) }
         </div>
       </Modal>
       <ConfirmModal show={ deleteConfirmation.show }
@@ -177,75 +177,75 @@
           Share Object
         </ModalHeader>
         <ModalBody>
-          <div className="form-group">
-            <label className="form-group__label">
+          <div class="form-group">
+            <label class="form-group__label">
               Shareable Link
             </label>
-            <input className="form-group__field"
+            <input class="form-group__field"
               type="text"
               ref="copyTextInput"
               readOnly="readOnly"
               value={ window.location.protocol + '//' + shareObject.url }
               v-on:click="selectTexts" />
-            <i className="form-group__bar" />
+            <i class="form-group__bar" />
           </div>
-          <div className="form-group" style={ { display: web.LoggedIn() ? 'block' : 'none' } }>
-            <label className="form-group__label">
+          <div class="form-group" style={ { display: web.LoggedIn() ? 'block' : 'none' } }>
+            <label class="form-group__label">
               Expires in
             </label>
-            <div className="set-expire">
-              <div className="set-expire__item">
-                <i className="set-expire__increase" onClick={ this.handleExpireValue.bind(this, 'expireDays', 1, shareObject.object) }></i>
-                <div className="set-expire__title">
+            <div class="set-expire">
+              <div class="set-expire__item">
+                <i class="set-expire__increase" onClick={ this.handleExpireValue.bind(this, 'expireDays', 1, shareObject.object) }></i>
+                <div class="set-expire__title">
                   Days
                 </div>
-                <div className="set-expire__value">
+                <div class="set-expire__value">
                   <input ref="expireDays"
                     type="number"
                     min={ 0 }
                     max={ 7 }
                     defaultValue={ 5 } />
                 </div>
-                <i className="set-expire__decrease" onClick={ this.handleExpireValue.bind(this, 'expireDays', -1, shareObject.object) }></i>
+                <i class="set-expire__decrease" onClick={ this.handleExpireValue.bind(this, 'expireDays', -1, shareObject.object) }></i>
               </div>
-              <div className="set-expire__item">
-                <i className="set-expire__increase" onClick={ this.handleExpireValue.bind(this, 'expireHours', 1, shareObject.object) }></i>
-                <div className="set-expire__title">
+              <div class="set-expire__item">
+                <i class="set-expire__increase" onClick={ this.handleExpireValue.bind(this, 'expireHours', 1, shareObject.object) }></i>
+                <div class="set-expire__title">
                   Hours
                 </div>
-                <div className="set-expire__value">
+                <div class="set-expire__value">
                   <input ref="expireHours"
                     type="number"
                     min={ 0 }
                     max={ 23 }
                     defaultValue={ 0 } />
                 </div>
-                <i className="set-expire__decrease" onClick={ this.handleExpireValue.bind(this, 'expireHours', -1, shareObject.object) }></i>
+                <i class="set-expire__decrease" onClick={ this.handleExpireValue.bind(this, 'expireHours', -1, shareObject.object) }></i>
               </div>
-              <div className="set-expire__item">
-                <i className="set-expire__increase" onClick={ this.handleExpireValue.bind(this, 'expireMins', 1, shareObject.object) }></i>
-                <div className="set-expire__title">
+              <div class="set-expire__item">
+                <i class="set-expire__increase" onClick={ this.handleExpireValue.bind(this, 'expireMins', 1, shareObject.object) }></i>
+                <div class="set-expire__title">
                   Minutes
                 </div>
-                <div className="set-expire__value">
+                <div class="set-expire__value">
                   <input ref="expireMins"
                     type="number"
                     min={ 0 }
                     max={ 59 }
                     defaultValue={ 0 } />
                 </div>
-                <i className="set-expire__decrease" onClick={ this.handleExpireValue.bind(this, 'expireMins', -1, shareObject.object) }></i>
+                <i class="set-expire__decrease" onClick={ this.handleExpireValue.bind(this, 'expireMins', -1, shareObject.object) }></i>
               </div>
             </div>
           </div>
         </ModalBody>
-        <div className="modal-footer">
+        <div class="modal-footer">
           <CopyToClipboard text={ window.location.protocol + '//' + shareObject.url } onCopy={ this.showMessage.bind(this) }>
-            <button className="btn btn--link">
+            <button class="btn btn--link">
               Copy Link
             </button>
           </CopyToClipboard>
-          <button className="btn btn--link" v-on:click="hideShareObjectModal">
+          <button class="btn btn--link" v-on:click="hideShareObjectModal">
             Cancel
           </button>
         </div>
@@ -270,12 +270,12 @@ import BrowserDropdown from './BrowserDropdown.vue'
 import Preview from './Preview.vue'
 import ObjectsList from './ObjectsList.vue'
 import SideBar from './SideBar.vue'
+import Policy from './Policy.vue'
 
 /*import Dropzone from '../components/Dropzone'*/
 import UploadModal from '../components/modals/UploadModal'
 import SettingsModal from '../components/modals/SettingsModal'
 import PolicyInput from '../components/PolicyInput'
-import Policy from '../components/Policy'
 import ConfirmModal from '../components/ConfirmModal'
 
 import * as actions from '../actions'
@@ -668,34 +668,34 @@ export default {
 
       let createButton = ''
       if (web.LoggedIn()) {
-        createButton = <Dropdown dropup className="create-new" id="dropdown-create-new">
-                         <Dropdown.Toggle noCaret className="create-new__toggle">
-                           <i className="zmdi zmdi-plus"></i>
+        createButton = <Dropdown dropup class="create-new" id="dropdown-create-new">
+                         <Dropdown.Toggle noCaret class="create-new__toggle">
+                           <i class="zmdi zmdi-plus"></i>
                          </Dropdown.Toggle>
                          <Dropdown.Menu>
                            <OverlayTrigger placement="top" overlay={ tooltips.uploadFile }>
-                             <a href="#" className="create-new__btn create-new__btn--upload">
+                             <a href="#" class="create-new__btn create-new__btn--upload">
                                <input type="file" onChange={ this.uploadFile.bind(this) } id="object-upload-input" />
                                <label htmlFor="object-upload-input"> </label>
                              </a>
                            </OverlayTrigger>
                            <OverlayTrigger placement="top" overlay={ tooltips.createBucket }>
-                             <a href="#" className="create-new__btn create-new__btn--bucket" v-on:click="showMakeBucketModal"></a>
+                             <a href="#" class="create-new__btn create-new__btn--bucket" v-on:click="showMakeBucketModal"></a>
                            </OverlayTrigger>
                            <OverlayTrigger placement="top" overlay={ tooltips.uploadFolder }>
-                             <a href="#" className="create-new__btn create-new__btn--folder"></a>
+                             <a href="#" class="create-new__btn create-new__btn--folder"></a>
                            </OverlayTrigger>
                          </Dropdown.Menu>
                        </Dropdown>
 
       } else {
         if (prefixWritable)
-          createButton = <Dropdown dropup className="create-new" id="dropdown-create-new">
-                           <Dropdown.Toggle noCaret className="create-new__toggle">
-                             <i className="zmdi zmdi-times"></i>
+          createButton = <Dropdown dropup class="create-new" id="dropdown-create-new">
+                           <Dropdown.Toggle noCaret class="create-new__toggle">
+                             <i class="zmdi zmdi-times"></i>
                            </Dropdown.Toggle>
                            <Dropdown.Menu>
-                             <a href="#" className="create-new__btn create-new__btn--upload">
+                             <a href="#" class="create-new__btn create-new__btn--upload">
                                <input type="file" onChange={ this.uploadFile.bind(this) } id="object-upload-input" />
                                <label htmlFor="object-upload-input"> </label>
                              </a>
