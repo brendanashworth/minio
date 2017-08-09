@@ -84,7 +84,7 @@ export default {
         // Convert it into an object with the relevant fields.
         bucket = { name: bucket }
 
-        bucket.isCurrent = (bucket == currentBucket)
+        bucket.isCurrent = (bucket.name == currentBucket)
         bucket.policy = 'read and write'
 
         return bucket

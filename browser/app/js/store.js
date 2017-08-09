@@ -108,6 +108,10 @@ export const store = new Vuex.Store({
       state.buckets = buckets
     },
 
+    setCurrentBucket(state, bucket) {
+      state.currentBucket = bucket
+    },
+
     // Adds objects into the object list.
     appendObjects(state, {objects, marker, istruncated}) {
       newState.objects = state.objects.concat(objects)

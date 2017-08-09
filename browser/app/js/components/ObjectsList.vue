@@ -126,12 +126,17 @@ export default {
 
     loadObjects: function() {
       const store = this.$store
+      const bucket = this.$route.params.bucket
 
       const currentPath = store.state.currentPath
       const marker = store.state.marker
 
+      // Update the current bucket if it changed.
+      if (store.state.currentBucket != bucket)
+        store.commit('setCurrentBucket', bucket)
+
       store.state.web.ListObjects({
-        bucketName: this.$route.params.bucket,
+        bucketName: bucket,
         prefix: currentPath,
         marker: marker
       })
