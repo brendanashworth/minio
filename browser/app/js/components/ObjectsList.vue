@@ -42,8 +42,7 @@
 </template>
 
 <script>
-import Moment from 'moment'
-import filesize from 'file-size'
+import { mapGetters } from 'vuex'
 
 import MaterialDesignIconicFonts from 'material-design-iconic-font/dist/css/material-design-iconic-font.min.css'
 
@@ -52,38 +51,9 @@ import MaterialDesignIconicFonts from 'material-design-iconic-font/dist/css/mate
 export default {
   name: 'ObjectsList',
 
-  data: function() {
-    return {
-      rawObjects: []
-    }
-  },
-
   computed: {
     objects: function() {
-      const objects = this.rawObjects
-      const checkedObjects = this.$store.state.checkedObjects
-      const currentPath = this.$store.state.currentPath
-
-      return objects.map((object, i) => {
-        // Gives data about each object.
-        let size = object.name.endsWith('/') ? '' : filesize(object.size).human()
-        let lastModified = object.name.endsWith('/') ? '' : Moment(object.lastModified).format('lll')
-        let path = currentPath + object.name
-        let type = 'other' // mime.getDataType(object.name, object.contentType)
-
-        let isChecked = (checkedObjects.indexOf(object.name) != -1)
-        let isFolder = (type == 'folder')
-
-        return {
-          size,
-          lastModified,
-          path,
-          type,
-          isChecked,
-          isFolder,
-          name: object.name
-        }
-      })
+      return this.$store.getters.objects
     }
   },
 
@@ -147,10 +117,16 @@ export default {
         marker: marker
       })
         .then(res => {
-          this.rawObjects = res.objects.map(object => {
+          const objects = res.objects.map(object => {
             object.name = object.name.replace(currentPath, '')
 
             return object
+          })
+          const istruncated = res.istruncated
+          const marker = res.marker
+
+          this.$store.commit('setObjects', {
+            objects, istruncated, marker
           })
         })
         .catch(err => store.dispatch('error', err))

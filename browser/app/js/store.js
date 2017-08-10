@@ -20,6 +20,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 
+import Moment from 'moment'
+import filesize from 'file-size'
+
 // This store is our global state manager.
 export const store = new Vuex.Store({
   // Only allow state to be mutated in a mutation handler.
@@ -30,6 +33,7 @@ export const store = new Vuex.Store({
     web: null,
     buckets: [],
     objects: [],
+    checkedObjects: [],
     istruncated: true,
     serverInfo: {},
     currentBucket: '',
@@ -61,7 +65,6 @@ export const store = new Vuex.Store({
       object: ''
     },
     prefixWritable: false,
-    checkedObjects: [],
     previewStatus: {
       display: false,
       bucket: '',
@@ -79,6 +82,31 @@ export const store = new Vuex.Store({
         return false
 
       return state.web.LoggedIn()
+    },
+
+    objects: state => {
+      const { checkedObjects, currentPath } = state
+
+      return state.objects.map((object, i) => {
+        // Gives data about each object.
+        let size = object.name.endsWith('/') ? '' : filesize(object.size).human()
+        let lastModified = object.name.endsWith('/') ? '' : Moment(object.lastModified).format('lll')
+        let path = currentPath + object.name
+        let type = 'other' // mime.getDataType(object.name, object.contentType)
+
+        let isChecked = (checkedObjects.indexOf(object.name) != -1)
+        let isFolder = (type == 'folder')
+
+        return {
+          size,
+          lastModified,
+          path,
+          type,
+          isChecked,
+          isFolder,
+          name: object.name
+        }
+      })
     }
   },
 
@@ -109,18 +137,17 @@ export const store = new Vuex.Store({
       state.currentBucket = bucket
     },
 
-    // Adds objects into the object list.
-    appendObjects(state, {objects, marker, istruncated}) {
-      newState.objects = state.objects.concat(objects)
-      newState.marker = marker
-      newState.istruncated = istruncated
-    },
-
     // Resets the object list to empty.
     resetObjects(state) {
       state.objects = []
       state.marker = ''
       state.istruncated = false
+    },
+
+    setObjects(state, {objects, marker, istruncated}) {
+      state.objects = objects
+      state.marker = marker
+      state.istruncated = istruncated
     },
 
     // Remove a single object from the object list.
