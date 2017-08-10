@@ -35,14 +35,17 @@
       </div>
       <ul class="buckets__list">
         <li v-for="bucket in buckets" v-bind:class="{ 'buckets__list__active': bucket.isCurrent }" v-on:click="selectBucket(bucket)">
-             <div class="buckets__list__name">
-               {{ bucket.name }}
-             </div>
-             <div class="buckets__list__actions">
-               <span>{{ bucket.policy }}</span>
-               <span class="buckets__list__policy" v-on:click="showPolicy">edit policy</span>
-             </div>
-           </li>
+          <div class="buckets__list__name">
+            {{ bucket.name }}
+          </div>
+          <div className="buckets__list__policy">
+            {{ bucket.policy }}
+          </div>
+          <b-dropdown class="buckets__list__actions" id="dropdown-bucket-actions" right>
+            <b-dropdown-item @click="showPolicy">Edit policy</b-dropdown-item>
+            <b-dropdown-item @click="deleteBucket(bucket.name)">Delete</b-dropdown-item>
+          </b-dropdown>
+        </li>
       </ul>
     </div>
 
@@ -114,43 +117,36 @@ export default {
 
   methods: {
     showPolicy: function() {
-      // TODO
+      alert('here is the bucket policy...')
     },
 
     selectBucket: function(bucket) {
       this.$router.push(minioBrowserPrefix + '/bucket/' + bucket.name)
     },
 
-    searchBuckets: function() {
-      // TODO
-    },
-
     deleteBucket: function(bucket) {
+      const store = this.$store
+
       // DeleteBucket() RPC call will ONLY delete a bucket if it is empty of
       // objects. This means a call can just be sent, as it is entirely reversable
       // and won't do any permanent damage.
-      web.DeleteBucket({
+      store.state.web.DeleteBucket({
         bucketName: bucket
       })
         .then(() => {
-          dispatch(showAlert({
+          store.dispatch('showAlert', {
             type: 'info',
-            message: `Bucket '${bucket}' has been deleted.`
-          }))
-          dispatch(removeBucket(bucket))
+            message: `Bucket '${bucket}'' has been deleted.`
+          })
+          store.commit('removeBucket', bucket)
         })
         .catch(err => {
-          let message = err.message
-
           // Show a custom "bucket not empty" message, as it can be confusing.
           if (/Bucket not empty/.test(err.message)) {
-            message = `Bucket '${bucket}' must be empty to delete.`
+            err.message = `Bucket '${bucket}' must be empty to delete.`
           }
 
-          dispatch(showAlert({
-            type: 'danger',
-            message: message
-          }))
+          store.dispatch('error', err)
         })
     },
 

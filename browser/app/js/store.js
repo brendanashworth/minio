@@ -135,6 +135,12 @@ export const store = new Vuex.Store({
       state.buckets = buckets
     },
 
+    removeBucket(state, bucket) {
+      let index = state.buckets.indexOf(bucket)
+
+      state.buckets = state.buckets.filter((e, i) => i != index)
+    },
+
     setCurrentBucket(state, bucket) {
       state.currentBucket = bucket
     },
