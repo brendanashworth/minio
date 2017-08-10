@@ -417,11 +417,6 @@ export default {
         })))
     },
 
-    showPreview: function(e, bucket, object) {
-      const {dispatch, previewStatus} = this.props
-      dispatch(actions.setPreviewStatus(true, bucket, object))
-    },
-
     renderold: function() {
       /*let tooltips = {
         uploadFile: <Tooltip id="tooltip-upload-file">

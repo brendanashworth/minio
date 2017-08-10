@@ -15,7 +15,7 @@
  !-->
 
 <template>
-  <aside class="preview" v-bind:class="{ 'preview--toggled': previewStatus.display }">
+  <aside class="preview" v-bind:class="{ 'preview--toggled': previewStatus.show }">
     <div class="preview__header">
       <span class="preview__label">{{ previewStatus.object }}</span>
       <i class="preview__close zmdi zmdi-long-arrow-left" v-on:click="hidePreview" />
@@ -70,13 +70,11 @@ export default {
 
   methods: {
     hidePreview: function() {
-      this.$store.state.previewStatus = {
+      this.$store.commit('setPreviewStatus', {
         show: false,
         bucket: '',
         object: ''
-      }
-
-      this.$store.state.checkedObjects = []
+      })
     }
   }
 }

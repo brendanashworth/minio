@@ -173,6 +173,6 @@ export default {
     this.$store.dispatch('loadBuckets')
 
     this.loadStorageInfo()
-  },
+  }
 }
 </script>

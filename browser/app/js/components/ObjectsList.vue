@@ -16,7 +16,7 @@
 
 <template>
   <div>
-    <div v-for="object in objects" class="objects__row" v-bind:class="{ 'objects__row--folder': object.isFolder, 'objects__row-selected': object.isChecked }" v-on:click="showObjectPreview(object.name)">
+    <div v-for="object in objects" class="objects__row" v-bind:class="{ 'objects__row--folder': object.isFolder, 'objects__row-selected': object.isChecked }" v-on:click="preview(object.name)">
       <div class="objects__item objects__item--select" :data-object-type="object.type">
         <div class="checkbox">
           <input type="checkbox"
@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="objects__item objects__item--name">
-        <a href="#" v-on:click="selectPrefix(object.path)">
+        <a href="#" v-on:click.prevent="selectPrefix(object.path)">
           {{ object.name }}
         </a>
       </div>
@@ -120,8 +120,14 @@ export default {
         this.$store.commit('addCheckedObject', object)
     },
 
-    showObjectPreview: function(objectName) {
+    preview: function(objectName) {
       const bucket = this.$store.state.currentBucket
+
+      this.$store.commit('setPreviewStatus', {
+        show: true,
+        bucket: bucket,
+        object: objectName
+      })
     },
 
     loadObjects: function() {
