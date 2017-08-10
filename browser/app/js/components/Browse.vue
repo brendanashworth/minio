@@ -29,7 +29,7 @@
           <div class="actions">
             <button class="zmdi zmdi-menu" v-on:click="toggleSidebar" />
             <button class="zmdi zmdi-view-comfy" />
-            <button v-on:click="showDeleteConfirmation" v-bind:disabled="checkedObjects.length == 0" class="zmdi zmdi-delete" />
+            <button v-on:click="promptDeleteObjects" v-bind:disabled="checkedObjects.length == 0" class="zmdi zmdi-delete" />
             <button v-on:click="shareObject" v-bind:disabled="checkedObjects.length != 1" class="zmdi zmdi-share" />
             <button v-on:click="downloadSelected" v-bind:disabled="checkedObjects.length == 0" class="zmdi zmdi-download" />
           </div>
@@ -143,19 +143,16 @@
           <policy-view v-for="policy in policies" :key="policy.prefix" :prefix="policy.prefix" :policy="policy.policy" />
         </div>
       </Modal>
-      <confirm-modal
-        icon='zmdi-alert-polygon c-red'
-        text='Are you sure you want to delete?'
-        sub='This cannot be undone!'
-        okText='Delete'
-        cancelText='Cancel'
-        v-on:ok="removeObject">
-      </confirm-modal>
 
       <share-modal ref="share_modal" />
 
       <settings-modal />
       -->
+
+      <confirm-delete-modal ref="delete_modal"
+        v-if="showDeleteConfirmation"
+        :objects="checkedObjects"
+        @ok="deleteObjects" />
 
       <div class="sidebar-backdrop" v-bind:class="{ 'sidebar-backdrop--toggled': sideBarActive }" v-on:click="hideSidebar" />
     </section>
@@ -173,7 +170,7 @@ import SideBar from './SideBar.vue'
 import Policy from './Policy.vue'
 import PolicyInput from './PolicyInput.vue'
 
-import ConfirmModal from './modals/ConfirmModal.vue'
+import ConfirmDeleteModal from './modals/ConfirmDeleteModal.vue'
 import UploadModal from './modals/UploadModal.vue'
 import SettingsModal from './modals/SettingsModal.vue'
 import AboutModal from './modals/AboutModal.vue'
@@ -205,7 +202,7 @@ export default {
     'side-bar': SideBar,
     'policy-view': Policy,
     'policy-input': PolicyInput,
-    'confirm-modal': ConfirmModal,
+    'confirm-delete-modal': ConfirmDeleteModal,
     'upload-modal': UploadModal,
     'settings-modal': SettingsModal,
     'about-modal': AboutModal,
@@ -229,7 +226,9 @@ export default {
 
     policies: state => state.policies,
 
-    currentBucket: state => state.currentBucket
+    currentBucket: state => state.currentBucket,
+
+    showDeleteConfirmation: state => state.showDeleteConfirmation
   })),
 
   methods: {
@@ -299,8 +298,9 @@ export default {
       dispatch(actions.uploadFile(file, this.xhr))
     },
 
-    removeObject: function() {
-      const {web, dispatch, currentPath, currentBucket, deleteConfirmation, checkedObjects} = this.props
+    deleteObjects: function() {
+      const {web, currentPath, currentBucket, deleteConfirmation, checkedObjects} = this.$store.state
+
       let objects = []
       if (checkedObjects.length > 0) {
         objects = checkedObjects.map(obj => `${currentPath}${obj}`)
@@ -313,38 +313,23 @@ export default {
         objects: objects
       })
         .then(() => {
-          this.hideDeleteConfirmation()
-          if (checkedObjects.length > 0) {
-            for (let i = 0; i < checkedObjects.length; i++) {
-              dispatch(actions.removeObject(checkedObjects[i].replace(currentPath, '')))
-            }
-            dispatch(actions.checkedObjectsReset())
-          } else {
-            let delObject = deleteConfirmation.object.replace(currentPath, '')
-            dispatch(actions.removeObject(delObject))
+          for (let object of objects) {
+            let name = object.replace(currentPath, '')
+
+            this.$store.commit('removeObject', name)
           }
         })
-        .catch(e => dispatch(actions.showAlert({
-          type: 'danger',
-          message: e.message
-        })))
+        .catch(err => this.$store.dispatch('error', err))
+    },
+
+    promptDeleteObjects: function() {
+      this.$store.state.showDeleteConfirmation = true
     },
 
     hideAlert: function(e) {
       e.preventDefault()
       const {dispatch} = this.props
       dispatch(actions.hideAlert())
-    },
-
-    showDeleteConfirmation: function(e, object) {
-      e.preventDefault()
-      const {dispatch} = this.props
-      dispatch(actions.showDeleteConfirmation(object))
-    },
-
-    hideDeleteConfirmation: function() {
-      const {dispatch} = this.props
-      dispatch(actions.hideDeleteConfirmation())
     },
 
     shareObject: function(e, object) {

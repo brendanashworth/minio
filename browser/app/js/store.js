@@ -55,10 +55,7 @@ export const store = new Vuex.Store({
     },
     showSettings: false,
     policies: [],
-    deleteConfirmation: {
-      object: '',
-      show: false
-    },
+    showDeleteConfirmation: false,
     shareObject: {
       url: '',
       object: ''
@@ -131,6 +128,8 @@ export const store = new Vuex.Store({
       let index = state.objects.indexOf(object)
 
       state.objects = state.objects.filter((e, i) => i != index)
+
+      this.commit('removeCheckedObject', object)
     },
 
     // Add a checked object.

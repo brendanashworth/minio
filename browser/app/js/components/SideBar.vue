@@ -82,12 +82,11 @@ export default {
         return bucket.indexOf(this.searchQuery) != -1
       }).map(bucket => {
         // Convert it into an object with the relevant fields.
-        bucket = { name: bucket }
-
-        bucket.isCurrent = (bucket.name == currentBucket)
-        bucket.policy = 'read and write'
-
-        return bucket
+        return {
+          name: bucket,
+          policy: 'read and write',
+          isCurrent: (bucket == currentBucket)
+        }
       })
     },
 
