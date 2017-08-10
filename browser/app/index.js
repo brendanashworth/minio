@@ -29,6 +29,7 @@ import { store } from './js/store'
 
 // This allows us to manipulate the server.
 import Web from './js/web'
+store.state.web = new Web(`${window.location.protocol}//${window.location.host}${minioBrowserPrefix}/webrpc`, vm)
 
 // Initialize our routes.
 import { minioBrowserPrefix } from './js/constants'
@@ -73,11 +74,6 @@ const vm = new Vue({
   // Inject the store.
   store
 })
-
-// Initiate our connection with the server.
-const web = new Web(`${window.location.protocol}//${window.location.host}${minioBrowserPrefix}/webrpc`, vm)
-
-vm.$store.state.web = web
 
 // This gives us a nice and pretty page loader.
 // First fade it out, then hide it entirely.
