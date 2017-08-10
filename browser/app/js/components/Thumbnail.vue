@@ -14,7 +14,7 @@
  ! limitations under the License.
  !-->
 
-<template>
+<template v-if="canPreview">
   <img :src="dataUrl" alt="Cannot display thumbnail (not an image)." />
 </template>
 
@@ -42,6 +42,9 @@ export default {
 
   methods: {
     load: function() {
+      // Set it to # to make loading more pleasant.
+      this.dataUrl = '#'
+
       if (!this.canPreview(this.object))
         return
 
@@ -63,13 +66,23 @@ export default {
       }
     },
 
-    canPreview(filename) {
+    canPreview() {
       // Returns a boolean, whether or not we can preview this file.
       const acceptable = ['image/jpeg', 'image/png', 'image/gif']
-      const type = mime.lookup(filename)
+      const type = mime.lookup(this.object)
 
       return (acceptable.indexOf(type) != -1)
     }
+  },
+
+  created() {
+    this.load()
+  },
+
+  // if the bucket/object change, re-load
+  watch: {
+    'bucket': 'load',
+    'object': 'load'
   }
 }
 </script>
