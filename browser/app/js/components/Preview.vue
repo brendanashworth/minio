@@ -22,7 +22,7 @@
     </div>
     <div class="preview__body">
       <div class="preview__item preview__item--img">
-        <!--<Thumbnail />-->
+        <thumbnail :bucket="previewStatus.bucket" :object="previewStatus.object" />
       </div>
       <div class="preview__info">
         <dl>
@@ -58,10 +58,16 @@
 </template>
 
 <script>
-/*import Thumbnail from './Thumbnail'*/
+import Thumbnail from './Thumbnail.vue'
 
 // Preview is the side panel for previewing info about objects.
 export default {
+  name: 'Preview',
+
+  components: {
+    'thumbnail': Thumbnail
+  },
+
   computed: {
     previewStatus: function() {
       return this.$store.state.previewStatus
@@ -69,10 +75,19 @@ export default {
 
     info: function() {
       const name = this.$store.state.previewStatus.object
+      const objects = this.$store.getters.objects
 
       // Get the object's information.
       // It should be the first (and only) object whose name is the same.
-      return this.$store.getters.objects.filter(obj => obj.name == name)[0]
+      const matches = objects.filter(obj => obj.name == name)
+
+      // If we don't have any matches, it's loading or unloading. Show ellipses
+      // in this case so it doesn't look weird.
+      return matches[0] || {
+        type: '...',
+        size: '...',
+        lastModified: '...'
+      }
     }
   },
 
