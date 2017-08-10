@@ -16,14 +16,15 @@
 
 <template>
   <modal class="policy" :value="show" @closed="hide">
-    <div class="modal-header" slot="title">
+    <div slot="title">
       <span>Bucket Policy</span>
       <small class="modal-header__sub">({{ bucket }})</small>
     </div>
-    <div class="policy__body">
-      <policy-input :bucket="bucket" defaultPrefix="*" :defaultPolicy="constants.READ_ONLY" />
+    <div class="policy__body" slot="modal-body">
+      <policy-input :bucket="bucket" defaultPrefix="" :defaultPolicy="constants.READ_ONLY" />
       <policy-view v-for="policy in policies" :key="policy.prefix" :prefix="policy.prefix" :policy="policy.policy" :bucket="bucket" />
     </div>
+    <div slot="modal-footer"></div>
   </modal>
 </template>
 
