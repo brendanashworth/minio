@@ -46,8 +46,6 @@ import { mapGetters } from 'vuex'
 
 import MaterialDesignIconicFonts from 'material-design-iconic-font/dist/css/material-design-iconic-font.min.css'
 
-//import mime from '../mime'
-
 export default {
   name: 'ObjectsList',
 

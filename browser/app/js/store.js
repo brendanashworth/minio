@@ -22,6 +22,7 @@ Vue.use(Vuex)
 
 import Moment from 'moment'
 import filesize from 'file-size'
+import { getDataType } from './mime'
 
 // This store is our global state manager.
 export const store = new Vuex.Store({
@@ -92,7 +93,8 @@ export const store = new Vuex.Store({
         let size = object.name.endsWith('/') ? '' : filesize(object.size).human()
         let lastModified = object.name.endsWith('/') ? '' : Moment(object.lastModified).format('lll')
         let path = currentPath + object.name
-        let type = 'other' // mime.getDataType(object.name, object.contentType)
+
+        let type = getDataType(object.name, object.contentType)
 
         let isChecked = (checkedObjects.indexOf(object.name) != -1)
         let isFolder = (type == 'folder')
