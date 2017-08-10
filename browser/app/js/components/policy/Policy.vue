@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { READ_ONLY, WRITE_ONLY, READ_WRITE } from '../constants'
+import { READ_ONLY, WRITE_ONLY, READ_WRITE } from '../../constants'
 
 export default {
   name: 'Policy',

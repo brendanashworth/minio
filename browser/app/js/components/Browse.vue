@@ -128,25 +128,12 @@
       --><about-modal /><!--
 
       <!--
-      <Modal class="policy"
-        animation={ false }
-        show={ showBucketPolicy }
-        onHide={ this.hideBucketPolicy.bind(this) }>
-        <ModalHeader>
-          Bucket Policy
-          <small class="modal-header__sub">({{ currentBucket }})</small>
-          <i class="close close--dark" v-on:click="hideBucketPolicy">×</i>
-        </ModalHeader>
-        <div class="policy__body">
-          <policy-input />
-          <policy-view v-for="policy in policies" :key="policy.prefix" :prefix="policy.prefix" :policy="policy.policy" />
-        </div>
-      </Modal>
-
       <share-modal ref="share_modal" />
 
       <settings-modal />
       -->
+
+      <policy-modal />
 
       <confirm-delete-modal ref="delete_modal"
         v-if="showDeleteConfirmation"
@@ -168,14 +155,13 @@ import BrowserDropdown from './BrowserDropdown.vue'
 import Preview from './Preview.vue'
 import ObjectsList from './ObjectsList.vue'
 import SideBar from './SideBar.vue'
-import Policy from './Policy.vue'
-import PolicyInput from './PolicyInput.vue'
 
 import ConfirmDeleteModal from './modals/ConfirmDeleteModal.vue'
 import UploadModal from './modals/UploadModal.vue'
 import SettingsModal from './modals/SettingsModal.vue'
 import AboutModal from './modals/AboutModal.vue'
 import ShareModal from './modals/ShareModal.vue'
+import PolicyModal from './modals/PolicyModal.vue'
 
 /*import Dropzone from '../components/Dropzone'*/
 
@@ -202,13 +188,12 @@ export default {
     'object-preview': Preview,
     'objects-list': ObjectsList,
     'side-bar': SideBar,
-    'policy-view': Policy,
-    'policy-input': PolicyInput,
     'confirm-delete-modal': ConfirmDeleteModal,
     'upload-modal': UploadModal,
     'settings-modal': SettingsModal,
     'about-modal': AboutModal,
-    'share-modal': ShareModal
+    'share-modal': ShareModal,
+    'policy-modal': PolicyModal
   },
 
   computed: Object.assign({

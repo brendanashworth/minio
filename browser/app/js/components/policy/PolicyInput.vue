@@ -25,19 +25,19 @@
     </div>
     <div class="policy__item">
       <select v-model="policy" class="form-group__field form-group__field--sm">
-        <option value={ READ_ONLY }>
+        <option :value="constants.READ_ONLY">
           Read Only
         </option>
-        <option value={ WRITE_ONLY }>
+        <option :value="constants.WRITE_ONLY">
           Write Only
         </option>
-        <option value={ READ_WRITE }>
+        <option :value="constants.READ_WRITE">
           Read and Write
         </option>
       </select>
     </div>
     <div class="policy__item">
-      <button class="btn btn--block btn--primary" onClick={ this.handlePolicySubmit.bind(this) }>
+      <button class="btn btn--block btn--primary" @click="addPolicy">
         Add
       </button>
     </div>
@@ -45,32 +45,20 @@
 </template>
 
 <script>
-import { READ_ONLY, WRITE_ONLY, READ_WRITE } from '../constants'
+import { mapState } from 'vuex'
+
+import constants from '../../constants'
 
 export default {
   name: 'PolicyInput',
 
-  computed: {
-    policies: function() {
-      return this.$store.state.policies
+  props: ['prefix', 'policy'],
 
-      /*
-        componentDidMount() {
-    const {web, dispatch} = this.props
-    web.ListAllBucketPolicies({
-      bucketName: this.props.currentBucket
-    }).then(res => {
-      let policies = res.policies
-      if (policies) dispatch(actions.setPolicies(policies))
-    }).catch(err => {
-      dispatch(actions.showAlert({
-        type: 'danger',
-        message: err.message
-      }))
-    })
-    */
-    }
-  },
+  computed: Object.assign({
+    constants
+  }, mapState({
+    policies: state => state.policies
+  })),
 
   methods: {
     addPolicy: function() {
