@@ -47,7 +47,7 @@
 <script>
 import { mapState } from 'vuex'
 
-import constants from '../../constants'
+import { READ_ONLY, WRITE_ONLY, READ_WRITE } from '../../constants'
 
 export default {
   name: 'PolicyInput',
@@ -55,7 +55,11 @@ export default {
   props: ['prefix', 'policy'],
 
   computed: Object.assign({
-    constants
+    constants: function() {
+      return {
+        READ_ONLY, WRITE_ONLY, READ_WRITE
+      }
+    }
   }, mapState({
     policies: state => state.policies
   })),

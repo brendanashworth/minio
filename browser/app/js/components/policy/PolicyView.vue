@@ -20,14 +20,14 @@
       {{ newPrefix }}
     </div>
     <div class="policy__item">
-      <select disabled value={{ policy }} v-on:change="changePolicy">
-        <option value={ READ_ONLY }>
+      <select disabled :value="policy" v-on:change="changePolicy">
+        <option :value="constants.READ_ONLY">
           Read Only
         </option>
-        <option value={ WRITE_ONLY }>
+        <option :value="constants.WRITE_ONLY">
           Write Only
         </option>
-        <option value={ READ_WRITE }>
+        <option :value="constants.READ_WRITE">
           Read and Write
         </option>
       </select>
@@ -44,17 +44,25 @@
 import { READ_ONLY, WRITE_ONLY, READ_WRITE } from '../../constants'
 
 export default {
-  name: 'Policy',
+  name: 'PolicyView',
 
   props: ['prefix', 'policy'],
 
   computed: {
     newPrefix: function() {
+      const currentBucket = this.$store.state.currentBucket
+
       let newPrefix = this.prefix.replace(currentBucket + '/', '')
       newPrefix = newPrefix.replace('*', '')
 
       if (!newPrefix)
         newPrefix = '*'
+    },
+
+    constants: function() {
+      return {
+        READ_ONLY, WRITE_ONLY, READ_WRITE
+      }
     }
   },
 

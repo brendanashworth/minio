@@ -179,6 +179,10 @@ export const store = new Vuex.Store({
       state.checkedObjects = state.checkedObjects.filter((e, i) => i != index)
     },
 
+    setPolicies(state, policies) {
+      state.policies = policies
+    },
+
     setPreviewStatus(state, status) {
       state.previewStatus = status
     },

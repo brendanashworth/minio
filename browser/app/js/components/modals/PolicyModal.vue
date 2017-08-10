@@ -19,9 +19,7 @@
     <small class="modal-header__sub">({{ currentBucket }})</small>
     <div class="policy__body">
       <policy-input />
-      <div v-for="policy in policies">
-        <policy-view :key="policy.prefix" :prefix="policy.prefix" :policy="policy.policy" />
-      </div>
+      <policy-view v-for="policy in policies" :key="policy.prefix" :prefix="policy.prefix" :policy="policy.policy" />
     </div>
   </modal>
 </template>
@@ -31,14 +29,14 @@
 import { modal } from 'vue-strap'
 import { mapState } from 'vuex'
 
-import Policy from '../policy/Policy.vue'
+import PolicyView from '../policy/PolicyView.vue'
 import PolicyInput from '../policy/PolicyInput.vue'
 
 export default {
   name: 'PolicyModal',
 
   components: {
-    'policy-view': Policy,
+    'policy-view': PolicyView,
     'policy-input': PolicyInput,
     'modal': modal
   },
@@ -68,7 +66,7 @@ export default {
         if (!res.policies)
           return
 
-        this.$store.dispatch('setPolicies', res.policies)
+        this.$store.commit('setPolicies', res.policies)
       }).catch(err => this.$store.dispatch('error', err))
     }
   },
