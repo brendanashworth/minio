@@ -16,7 +16,7 @@
 
 <template>
   <nav class="top-links">
-    <b-dropdown right id="dropdown-top-links">
+    <dropdown right id="dropdown-top-links">
       <!--<Dropdown.Toggle noCaret>
         <span href=""><i class="zmdi zmdi-more-vert" /></span>
       </Dropdown.Toggle>-->
@@ -43,14 +43,20 @@
           <a href="" v-on:click="logout">Sign Out <i class="zmdi zmdi-sign-in" /></a>
         </li>
       <!--</Dropdown.Menu>-->
-    </b-dropdown>
+    </dropdown>
   </nav>
 </template>
 
 <script>
+import { dropdown } from 'vue-strap'
+
 import { minioBrowserPrefix } from '../constants'
 
 export default {
+  components: {
+    'dropdown': dropdown
+  },
+
   methods: {
     about: function() {
       // TODO show About

@@ -25,8 +25,7 @@
       okIcon='fa fa-times'
       cancelText='Upload'
       cancelIcon='fa fa-cloud-upload'
-      v-on:ok="abortUploads"
-      v-on:cancel="hideAbort">
+      v-on:ok="abortUploads">
     </confirm-modal>
 
     <div v-else-if="isUploading" class="alert alert-info progress animated fadeInUp">

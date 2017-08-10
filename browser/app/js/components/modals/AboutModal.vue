@@ -14,8 +14,8 @@
  ! limitations under the License.
  !-->
 
-<template>
-  <b-modal @shown="shown" v-on:mounted="load">
+<template v-if="shown">
+  <modal>
     <i class="close close--dark" v-on:click="hide">×</i>
     <div class="about">
       <div class="about__logo">
@@ -42,14 +42,19 @@
         </dl>
       </div>
     </div>
-  </b-modal>
+  </modal>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import { modal } from 'vue-strap'
 
 export default {
   name: 'AboutModal',
+
+  components: {
+    'modal': modal
+  },
 
   data: function() {
     return { shown: false }
@@ -86,6 +91,10 @@ export default {
     show: function() {
       this.shown = true
     }
+  },
+
+  created() {
+    this.load()
   }
 }
 </script>

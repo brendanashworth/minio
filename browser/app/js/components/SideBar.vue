@@ -38,13 +38,13 @@
           <div class="buckets__list__name">
             {{ bucket.name }}
           </div>
-          <div className="buckets__list__policy">
+          <div class="buckets__list__policy">
             {{ bucket.policy }}
           </div>
-          <b-dropdown class="buckets__list__actions" id="dropdown-bucket-actions" right>
-            <b-dropdown-item @click="showPolicy">Edit policy</b-dropdown-item>
-            <b-dropdown-item @click="deleteBucket(bucket.name)">Delete</b-dropdown-item>
-          </b-dropdown>
+          <dropdown class="buckets__list__actions" text=".." right>
+            <li><a @click="showPolicy">Edit policy</a></li>
+            <li><a @click="deleteBucket(bucket.name)">Delete</a></li>
+          </dropdown>
         </li>
       </ul>
     </div>
@@ -63,9 +63,15 @@
 <script>
 import filesize from 'file-size'
 
+import { dropdown } from 'vue-strap'
+
 import { minioBrowserPrefix } from '../constants'
 
 export default {
+  components: {
+    'dropdown': dropdown
+  },
+
   data: function() {
     return {
       searchQuery: '',

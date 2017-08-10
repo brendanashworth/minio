@@ -16,12 +16,11 @@
 
 <template>
   <section class="browser__inner">
-    <b-alert class='alert animated' v-bind:class="{ fadeInDown: alert.show, fadeOutUp: !alert.show }">
-      <!-- bsStyle={ alert.type } onDismiss={ this.hideAlert.bind(this) }>-->
+    <alert :type="alert.type" class='animated' v-bind:class="{ fadeInDown: alert.show, fadeOutUp: !alert.show }">
        <div class='text-center'>
          {{ alert.message }}
        </div>
-     </b-alert>
+     </alert>
 
     <section class='content' v-bind:class="{ 'content--toggled': sideBarActive }">
       <header class="header">
@@ -162,6 +161,8 @@
 <script>
 import storage from 'local-storage-fallback'
 
+import { alert } from 'vue-strap'
+
 import Path from './Path.vue'
 import BrowserDropdown from './BrowserDropdown.vue'
 import Preview from './Preview.vue'
@@ -195,6 +196,7 @@ export default {
   name: 'Browse',
 
   components: {
+    'alert': alert,
     'breadcrumb-path': Path,
     'browser-dropdown': BrowserDropdown,
     'object-preview': Preview,

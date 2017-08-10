@@ -15,8 +15,8 @@
  !-->
 
 <template>
-  <b-modal bsSize="small" ok-title={{ okText }} cancel-title={{ cancelText }}
-    @ok="okHandler" @cancel="cancelHandler" class="modal--confirm">
+  <modal bsSize="small" ok-text={{ okText }} cancel-text={{ cancelText }}
+    @callback="okHandler" class="modal--confirm">
     <div class="modal--confirm__icon">
       <i class="zmdi" v-bind:class="{ icon }" />
     </div>
@@ -26,24 +26,26 @@
     <div class="modal--confirm__sub">
       {{ sub }}
     </div>
-  </b-modal>
+  </modal>
 </template>
 
 
 <script>
+import { modal } from 'vue-strap'
+
 // ConfirmModal opens a confirm modal, with events 'ok' and 'cancel'.
 export default {
   name: 'ConfirmModal',
 
   props: ['cancelText', 'okText', 'sub', 'text', 'icon'],
 
+  components: {
+    'modal': modal
+  },
+
   methods: {
     okHandler: function() {
       this.$emit('ok')
-    },
-
-    cancelHandler: function() {
-      this.$emit('cancel')
     }
   }
 }
