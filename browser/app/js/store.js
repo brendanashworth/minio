@@ -70,6 +70,9 @@ export const store = new Vuex.Store({
       display: false,
       bucket: '',
       object: ''
+    },
+    modals: {
+      policy: false
     }
   },
 
@@ -185,6 +188,13 @@ export const store = new Vuex.Store({
 
     setPreviewStatus(state, status) {
       state.previewStatus = status
+    },
+
+    setModalStatus(state, {modal, status}) {
+      let modals = state.modals
+      modals[modal] = status
+
+      state.modals = modals
     },
 
     setServerInfo(state, info) {

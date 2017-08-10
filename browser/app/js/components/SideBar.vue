@@ -123,7 +123,10 @@ export default {
 
   methods: {
     showPolicy: function() {
-      alert('here is the bucket policy...')
+      this.$store.commit('setModalStatus', {
+        modal: 'policy',
+        status: true
+      })
     },
 
     selectBucket: function(bucket) {

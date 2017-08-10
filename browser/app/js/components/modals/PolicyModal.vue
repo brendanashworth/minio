@@ -41,22 +41,14 @@ export default {
     'modal': modal
   },
 
-  data: function() {
-    return {
-      shown: false
-    }
-  },
-
   computed: mapState({
     currentBucket: state => state.currentBucket,
-    policies: state => state.policies
+    policies: state => state.policies,
+
+    shown: state => state.modals.policy
   }),
 
   methods: {
-    hide: function() {
-      this.shown = false
-    },
-
     load: function() {
       const { currentBucket, web } = this.$store.state
 
