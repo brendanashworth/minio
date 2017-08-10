@@ -28,15 +28,15 @@
         <dl>
           <dt>Type</dt>
           <dd>
-            JPEG Image
+            {{ info.type }}
           </dd>
           <dt>Size</dt>
           <dd>
-            1.1 MB
+            {{ info.size }}
           </dd>
           <dt>Modified</dt>
           <dd>
-            Mar 1, 2017 12:12 PM
+            {{ info.lastModified }}
           </dd>
           <dt>Policy</dt>
           <dd>
@@ -65,6 +65,14 @@ export default {
   computed: {
     previewStatus: function() {
       return this.$store.state.previewStatus
+    },
+
+    info: function() {
+      const name = this.$store.state.previewStatus.object
+
+      // Get the object's information.
+      // It should be the first (and only) object whose name is the same.
+      return this.$store.getters.objects.filter(obj => obj.name == name)[0]
     }
   },
 
