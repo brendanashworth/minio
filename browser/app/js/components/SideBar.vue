@@ -42,7 +42,7 @@
             {{ bucket.policy }}
           </div>
           <dropdown class="buckets__list__actions">
-            <li><a @click="showPolicy">Edit policy</a></li>
+            <li><a @click="showPolicy(bucket.name)">Edit policy</a></li>
             <li><a @click="deleteBucket(bucket.name)">Delete</a></li>
           </dropdown>
         </li>
@@ -122,10 +122,13 @@ export default {
   },
 
   methods: {
-    showPolicy: function() {
+    showPolicy: function(bucket) {
       this.$store.commit('setModalStatus', {
         modal: 'policy',
-        status: true
+        status: {
+          show: true,
+          bucket: bucket
+        }
       })
     },
 

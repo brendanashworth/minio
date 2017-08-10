@@ -52,7 +52,14 @@ import { READ_ONLY, WRITE_ONLY, READ_WRITE } from '../../constants'
 export default {
   name: 'PolicyInput',
 
-  props: ['prefix', 'policy'],
+  props: ['defaultPrefix', 'defaultPolicy', 'bucket'],
+
+  data: function() {
+    return {
+      prefix: this.defaultPrefix,
+      policy: this.defaultPolicy
+    }
+  },
 
   computed: Object.assign({
     constants: function() {
@@ -66,21 +73,20 @@ export default {
 
   methods: {
     addPolicy: function() {
-      const currentBucket = this.$store.state.currentBucket
       const prefix = this.prefix
       const policy = this.policy
 
       const state = this.$store.state
 
       state.web.SetBucketPolicy({
-        bucketName: currentBucket,
+        bucketName: this.bucket,
         prefix, policy
       })
         .then(() => {
-          state.policies = state.policies.concat([{
+          this.$store.commit('addPolicy', {
             prefix: prefix + '*',
             policy
-          }])
+          })
 
           this.prefix = ''
         })

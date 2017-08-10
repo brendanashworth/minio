@@ -15,11 +15,14 @@
  !-->
 
 <template>
-  <modal class="policy" :value="shown" title="Bucket Policy">
-    <small class="modal-header__sub">({{ currentBucket }})</small>
+  <modal class="policy" :value="show" @closed="hide">
+    <div class="modal-header" slot="title">
+      <span>Bucket Policy</span>
+      <small class="modal-header__sub">({{ bucket }})</small>
+    </div>
     <div class="policy__body">
-      <policy-input />
-      <policy-view v-for="policy in policies" :key="policy.prefix" :prefix="policy.prefix" :policy="policy.policy" />
+      <policy-input :bucket="bucket" defaultPrefix="*" :defaultPolicy="constants.READ_ONLY" />
+      <policy-view v-for="policy in policies" :key="policy.prefix" :prefix="policy.prefix" :policy="policy.policy" :bucket="bucket" />
     </div>
   </modal>
 </template>
@@ -28,6 +31,8 @@
 <script>
 import { modal } from 'vue-strap'
 import { mapState } from 'vuex'
+
+import { READ_ONLY, WRITE_ONLY, READ_WRITE } from '../../constants'
 
 import PolicyView from '../policy/PolicyView.vue'
 import PolicyInput from '../policy/PolicyInput.vue'
@@ -41,19 +46,35 @@ export default {
     'modal': modal
   },
 
-  computed: mapState({
-    currentBucket: state => state.currentBucket,
+  computed: Object.assign({
+    constants: function() {
+      return {
+        READ_ONLY, WRITE_ONLY, READ_WRITE
+      }
+    }
+  }, mapState({
+    bucket: state => state.modals.policy.bucket,
     policies: state => state.policies,
 
-    shown: state => state.modals.policy
-  }),
+    show: state => state.modals.policy.show
+  })),
 
   methods: {
+    hide: function() {
+      this.$store.commit('setModalStatus', {
+        modal: 'policy',
+        status: {
+          show: false,
+          bucket: ''
+        }
+      })
+    },
+
     load: function() {
-      const { currentBucket, web } = this.$store.state
+      const { web } = this.$store.state
 
       web.ListAllBucketPolicies({
-        bucketName: currentBucket
+        bucketName: this.bucket
       }).then(res => {
         if (!res.policies)
           return

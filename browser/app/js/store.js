@@ -72,7 +72,10 @@ export const store = new Vuex.Store({
       object: ''
     },
     modals: {
-      policy: false
+      policy: {
+        bucket: '',
+        show: false
+      }
     }
   },
 
@@ -184,6 +187,14 @@ export const store = new Vuex.Store({
 
     setPolicies(state, policies) {
       state.policies = policies
+    },
+
+    addPolicy(state, policy) {
+      state.policies = state.policies.concat([policy])
+    },
+
+    removePolicy(state, policy) {
+      state.policies = state.policies.filter((e) => e.prefix != policy.prefix)
     },
 
     setPreviewStatus(state, status) {

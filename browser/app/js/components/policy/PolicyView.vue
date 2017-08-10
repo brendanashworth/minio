@@ -20,7 +20,7 @@
       {{ newPrefix }}
     </div>
     <div class="policy__item">
-      <select disabled :value="policy" v-on:change="changePolicy">
+      <select disabled :value="newPolicy" v-on:change="changePolicy">
         <option :value="constants.READ_ONLY">
           Read Only
         </option>
@@ -46,13 +46,17 @@ import { READ_ONLY, WRITE_ONLY, READ_WRITE } from '../../constants'
 export default {
   name: 'PolicyView',
 
-  props: ['prefix', 'policy'],
+  props: ['prefix', 'policy', 'bucket'],
+
+  data: function() {
+    return {
+      newPolicy: this.policy
+    }
+  },
 
   computed: {
     newPrefix: function() {
-      const currentBucket = this.$store.state.currentBucket
-
-      let newPrefix = this.prefix.replace(currentBucket + '/', '')
+      let newPrefix = this.prefix.replace(this.bucket + '/', '')
       newPrefix = newPrefix.replace('*', '')
 
       if (!newPrefix)
@@ -72,18 +76,17 @@ export default {
     },
 
     removePolicy: function(e) {
-      const currentBucket = this.$store.state.currentBucket
-
-      let newPrefix = this.prefix.replace(currentBucket + '/', '')
+      let newPrefix = this.prefix.replace(this.bucket + '/', '')
       newPrefix = newPrefix.replace('*', '')
 
       web.SetBucketPolicy({
-        bucketName: currentBucket,
+        bucketName: this.bucket,
         prefix: newPrefix,
         policy: 'none'
       })
         .then(() => {
-          this.$store.state.policies = this.props.policies.filter(policy => policy.prefix != this.prefix)
+          // TODO remove the correct policy?
+          this.$store.commit('removePolicy', { prefix: newPrefix })
         })
         .catch(e => function() {
           this.$store.commit('setAlert', {
