@@ -14,8 +14,8 @@
  ! limitations under the License.
  !-->
 
-<template v-if="shown">
-  <modal>
+<template>
+  <modal :value="shown">
     <i class="close close--dark" v-on:click="hide">×</i>
     <div class="about">
       <div class="about__logo">
