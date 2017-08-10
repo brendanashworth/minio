@@ -41,7 +41,7 @@
           <div class="buckets__list__policy">
             {{ bucket.policy }}
           </div>
-          <dropdown class="buckets__list__actions" text=".." right>
+          <dropdown class="buckets__list__actions">
             <li><a @click="showPolicy">Edit policy</a></li>
             <li><a @click="deleteBucket(bucket.name)">Delete</a></li>
           </dropdown>

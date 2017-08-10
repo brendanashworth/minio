@@ -98,11 +98,8 @@
 
         &.buckets__list__active {
             &:before,
-            &:after {
-                .opacity(1);
-            }
-
-            .buckets__list__actions > .dropdown-toggle {
+            &:after,
+            .buckets__list__actions {
                 .opacity(1);
             }
         }
@@ -136,9 +133,8 @@
         }
 
         &:hover {
-            .buckets__list__actions > .dropdown-toggle {
+            .buckets__list__actions {
                 .opacity(1);
-                background-color: @muted-bg;
             }
         }
     }
@@ -161,6 +157,11 @@
     top: 13px;
     right: 20px;
 
+    &:not(.open) {
+        .opacity(0);
+        .transition(opacity 300ms);
+    }
+
     & > .dropdown-toggle {
         width: 35px;
         height: 35px;
@@ -170,11 +171,18 @@
         padding: 0;
         border-radius: 50%;
 
-        .transition(opacity 300ms);
-        .transition(background-color 300ms);
+        &:hover {
+            background-color: @muted-bg;
+        }
+    }
 
-        &:not(.show) {
-            opacity: 0;
+    .dropdown-menu {
+        // vue-strap doesn't allow specifying right
+        right: 0;
+        left: auto;
+
+        & > li > a {
+            text-align: right;
         }
     }
 }
