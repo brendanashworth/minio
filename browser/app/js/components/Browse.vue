@@ -101,18 +101,11 @@ import ShareModal from './modals/ShareModal.vue'
 import PolicyModal from './modals/PolicyModal.vue'
 import MakeBucketModal from './modals/MakeBucketModal.vue'
 
-/*import Dropzone from '../components/Dropzone'*/
-
 import * as utils from '../utils'
 import * as mime from '../mime'
 import { minioBrowserPrefix } from '../constants'
 
 import { mapState } from 'vuex'
-
-/*
-import CopyToClipboard from 'react-copy-to-clipboard'
-import InfiniteScroll from 'react-infinite-scroller';
-*/
 
 import logoInvert from '../../img/logo-dark.svg'
 

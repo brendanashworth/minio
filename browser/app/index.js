@@ -49,6 +49,8 @@ const router = new VueRouter({
     path: minioBrowserPrefix + '/bucket/:bucket',
     component: Browse
   }, {
+    /* TODO: show login on unauthenticated /, not as own route,
+       change above route to /:bucket, see harsha */
     path: minioBrowserPrefix + '/login',
     component: Login
   }, {
@@ -58,6 +60,7 @@ const router = new VueRouter({
   }, {
     path: '*',
     component: {
+      /* TODO create a not found error */
       template: '<h1>404 not found, ha</h1>'
     }
   }]

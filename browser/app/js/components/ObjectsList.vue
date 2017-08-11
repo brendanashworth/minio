@@ -70,6 +70,13 @@
 <script>
 import { mapGetters } from 'vuex'
 
+/*
+TODO: These need to be implemented in their respective Vuejs alternatives.
+import Dropzone from './Dropzone.vue'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import InfiniteScroll from 'react-infinite-scroller'
+*/
+
 import MaterialDesignIconicFonts from 'material-design-iconic-font/dist/css/material-design-iconic-font.min.css'
 
 import * as utils from '../utils'

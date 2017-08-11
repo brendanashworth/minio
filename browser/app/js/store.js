@@ -26,9 +26,6 @@ import { getDataType } from './mime'
 
 // This store is our global state manager.
 export const store = new Vuex.Store({
-  // Only allow state to be mutated in a mutation handler.
-  /* strict: true, */
-
   // This is our default state.
   state: {
     web: null,
@@ -335,47 +332,7 @@ export const store = new Vuex.Store({
 })
 
 /*
-export const selectPrefix = prefix => {
-  return (dispatch, getState) => {
-    const {currentBucket, web} = getState()
-    dispatch(resetObjects())
-    dispatch(setLoadPath(prefix))
-    web.ListObjects({
-      bucketName: currentBucket,
-      prefix,
-      marker: ""
-    })
-      .then(res => {
-        let objects = res.objects
-        if (!objects)
-          objects = []
-        objects = objects.map(object => {
-          object.name = object.name.replace(`${prefix}`, '');
-          return object
-        })
-        dispatch(appendObjects(
-          objects,
-          res.nextmarker,
-          res.istruncated
-        ))
-        dispatch(setPrefixWritable(res.writable))
-        dispatch(setSortNameOrder(false))
-        dispatch(setCurrentPath(prefix))
-        dispatch(setLoadBucket(''))
-        dispatch(setLoadPath(''))
-      })
-      .catch(err => {
-        dispatch(showAlert({
-          type: 'danger',
-          message: err.message
-        }))
-        dispatch(setLoadBucket(''))
-        dispatch(setLoadPath(''))
-        // Use browserHistory.replace instead of push so that browser back button works fine.
-        browserHistory.replace(`${minioBrowserPrefix}/login`)
-      })
-  }
-}
+TODO do download and upload handlers
 
 export const downloadSelected = (url, req, xhr) => {
   return (dispatch) => {

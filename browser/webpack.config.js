@@ -92,13 +92,14 @@ module.exports = {
       {from: 'app/img/logo.svg'}
     ]),
     new webpack.ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(en)$/),
-    /*new purify({
+    new purify({
         basePath: __dirname,
         paths: [
             "app/index.html",
-            "app/js/*.js"
+            "app/js/*.js",
+            "app/js/*.vue"
         ]
-    })*/
+    })
   ],
   resolve: {
     alias: {
