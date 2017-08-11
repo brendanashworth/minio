@@ -75,6 +75,9 @@ export const store = new Vuex.Store({
       policy: {
         bucket: '',
         show: false
+      },
+      about: {
+        show: false
       }
     }
   },

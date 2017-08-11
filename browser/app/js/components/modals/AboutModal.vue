@@ -15,11 +15,10 @@
  !-->
 
 <template>
-  <modal :value="shown">
-    <i class="close close--dark" v-on:click="hide">×</i>
-    <div class="about">
+  <modal :value="show" @closed="hide">
+    <div class="about" slot="modal-body">
       <div class="about__logo">
-        <img src="/img/logo-dark.svg" alt="" />
+        <img src="/minio/logo-dark.svg" alt="" />
       </div>
       <div class="about__content">
         <dl class="about__info">
@@ -42,6 +41,7 @@
         </dl>
       </div>
     </div>
+    <div slot="modal-footer"></div>
   </modal>
 </template>
 
@@ -56,12 +56,10 @@ export default {
     'modal': modal
   },
 
-  data: function() {
-    return { shown: false }
-  },
-
   computed: mapState({
-    serverInfo: state => state.serverInfo
+    serverInfo: state => state.serverInfo,
+
+    show: state => state.modals.about.show
   }),
 
   methods: {
@@ -85,11 +83,12 @@ export default {
     },
 
     hide: function() {
-      this.shown = false
-    },
-
-    show: function() {
-      this.shown = true
+      this.$store.commit('setModalStatus', {
+        modal: 'about',
+        status: {
+          show: false
+        }
+      })
     }
   },
 

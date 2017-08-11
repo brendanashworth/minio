@@ -56,7 +56,12 @@ export default {
 
   methods: {
     about: function() {
-      // TODO show About
+      this.$store.commit('setModalStatus', {
+        modal: 'about',
+        status: {
+          show: true
+        }
+      })
     },
 
     settings: function() {
