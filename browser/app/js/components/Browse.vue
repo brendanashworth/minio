@@ -356,6 +356,7 @@ export default {
     },
 
     hideSidebar: function(event) {
+      // TODO
       let e = event || window.event;
 
       // Support all browsers.
@@ -370,6 +371,7 @@ export default {
     },
 
     showMessage: function() {
+      // TODO
       const {dispatch} = this.props
       dispatch(actions.showAlert({
         type: 'success',
@@ -384,6 +386,7 @@ export default {
     },
 
     downloadSelected: function() {
+      // TODO
       const {dispatch, web} = this.props
       let req = {
         bucketName: this.props.currentBucket,
@@ -405,6 +408,7 @@ export default {
     },
 
     renderold: function() {
+      // TODO
       /*let tooltips = {
         uploadFile: <Tooltip id="tooltip-upload-file">
                       Upload File

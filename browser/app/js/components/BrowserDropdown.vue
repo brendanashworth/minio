@@ -17,10 +17,7 @@
 <template>
   <nav class="top-links">
     <dropdown right id="dropdown-top-links">
-      <!--<Dropdown.Toggle noCaret>
-        <span href=""><i class="zmdi zmdi-more-vert" /></span>
-      </Dropdown.Toggle>-->
-      <!--<Dropdown.Menu class="dropdown-menu-right">-->
+      <ul class="dropdown-menu dropdown-menu-right" slot="dropdown-menu">
         <li>
           <a v-on:click="about">About <i class="zmdi zmdi-info" /></a>
         </li>
@@ -42,7 +39,7 @@
         <li>
           <a href="" v-on:click="logout">Sign Out <i class="zmdi zmdi-sign-in" /></a>
         </li>
-      <!--</Dropdown.Menu>-->
+      </ul>
     </dropdown>
   </nav>
 </template>

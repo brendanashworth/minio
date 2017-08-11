@@ -102,6 +102,8 @@ export default {
       const store = this.$store
       const bucket = this.$route.params.bucket
 
+      if (!bucket) return
+
       const currentPath = store.state.currentPath
       const marker = store.state.marker
 
