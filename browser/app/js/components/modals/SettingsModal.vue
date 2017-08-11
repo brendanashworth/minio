@@ -26,7 +26,7 @@
           id="accessKey"
           name="accesskey"
           :value="accessKey"
-          :readonly="keysReadOnly" />
+          :disabled="keysReadOnly" />
         <i class="form-group__bar"></i>
       </div>
 
@@ -40,7 +40,7 @@
             id="secretKey"
             name="secretKey"
             :value="secretKey"
-            :readonly="keysReadOnly" />
+            :disabled="keysReadOnly" />
           <div @click="secretKeyVisible = !secretKeyVisible" class="form-group__addon">
             <i class="form-group__toggle-type" :class="{ 'toggled': secretKeyVisible }"></i>
           </div>
@@ -117,36 +117,30 @@ export default {
     },
 
     load: function() {
-      // Check environment variables first. They may or may not have been
-      // loaded already.
-      if (false && serverInfo.envVars) {
-        // TODO
-        serverInfo.envVars.forEach(envVar => {
-          let keyVal = envVar.split('=')
-          if (keyVal[0] == 'MINIO_ACCESS_KEY') {
-            accessKeyEnv = keyVal[1]
-          } else if (keyVal[0] == 'MINIO_SECRET_KEY') {
-            secretKeyEnv = keyVal[1]
-          }
-        })
-
-        if (accessKeyEnv != '' || secretKeyEnv != '') {
-          dispatch(actions.setSettings({
-            accessKey: accessKeyEnv,
-            secretKey: secretKeyEnv,
-            keysReadOnly: true
-          }))
-        }
-        return
-      }
-
       const web = this.$store.state.web
 
-      web.GetAuth()
+      web.ServerInfo()
+        .then(res => {
+          // Check environment variables first. They may or may not have been
+          // loaded already.
+          if (res.MinioGlobalInfo.isEnvCreds) {
+            // We don't display them.
+            this.accessKey = 'xxxxxxxxx'
+            this.secretKey = 'xxxxxxxxx'
+            this.keysReadOnly = true
+
+            return
+          }
+
+          return web.GetAuth()
+        })
         .then(data => {
+          if (!data) return
+
           this.accessKey = data.accessKey
           this.secretKey = data.secretKey
         })
+        .catch(err => this.$store.dispatch('error', err))
     },
 
     hide: function() {
