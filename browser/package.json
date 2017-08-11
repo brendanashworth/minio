@@ -75,7 +75,7 @@
     "mime-types": "^2.1.16",
     "vue": "^2.4.2",
     "vue-router": "^2.7.0",
-    "vue-strap": "github:brendanashworth/vue-strap#d561171",
+    "vue-strap": "github:brendanashworth/vue-strap#93d8433",
     "vuex": "^2.3.1"
   }
 }
