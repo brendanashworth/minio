@@ -69,6 +69,8 @@ export default {
           bucket: ''
         }
       })
+
+      this.$store.commit('setPolicies', [])
     },
 
     load: function() {
@@ -87,6 +89,10 @@ export default {
 
   created() {
     this.load()
+  },
+
+  watch: {
+    'bucket': 'load'
   }
 }
 </script>

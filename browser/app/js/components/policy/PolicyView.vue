@@ -20,7 +20,7 @@
       {{ newPrefix }}
     </div>
     <div class="policy__item">
-      <select disabled :value="newPolicy" v-on:change="changePolicy">
+      <select disabled :value="newPolicy">
         <option :value="constants.READ_ONLY">
           Read Only
         </option>
@@ -61,6 +61,8 @@ export default {
 
       if (!newPrefix)
         newPrefix = '*'
+
+      return newPrefix
     },
 
     constants: function() {
@@ -71,10 +73,6 @@ export default {
   },
 
   methods: {
-    changePolicy: function(e) {
-      // TODO mutate policy
-    },
-
     removePolicy: function(e) {
       let newPrefix = this.prefix.replace(this.bucket + '/', '')
       newPrefix = newPrefix.replace('*', '')
@@ -85,7 +83,6 @@ export default {
         policy: 'none'
       })
         .then(() => {
-          // TODO remove the correct policy?
           this.$store.commit('removePolicy', { prefix: newPrefix })
         })
         .catch(e => function() {

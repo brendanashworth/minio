@@ -88,14 +88,10 @@ export default {
             policy
           })
 
-          this.prefix = ''
+          this.prefix = this.defaultPrefix
+          this.policy = this.defaultPolicy
         })
-        .catch(e => {
-          state.commit('setAlert', {
-            type: 'danger',
-            message: e.message
-          })
-        })
+        .catch(e => state.dispatch('error', e))
     }
   }
 }
