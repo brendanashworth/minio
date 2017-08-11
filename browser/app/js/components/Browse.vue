@@ -16,7 +16,8 @@
 
 <template>
   <section class="browser__inner">
-    <alert :type="alert.type" class='animated' v-bind:class="{ fadeInDown: alert.show, fadeOutUp: !alert.show }">
+  <!-- TODO can only show one alert, then close, cannot reopen, must keep state -->
+    <alert dismissable :type="alert.type" class='animated' v-bind:class="{ fadeInDown: alert.show, fadeOutUp: !alert.show }">
        <div class='text-center'>
          {{ alert.message }}
        </div>
@@ -123,15 +124,13 @@
             </div>
           </form>
         </ModalBody>
-      </Modal>
+      </Modal>-->
 
-      --><about-modal /><!--
+      <about-modal />
 
-      <!--
-      <share-modal ref="share_modal" />
+      <!--<share-modal ref="share_modal" />-->
 
       <settings-modal />
-      -->
 
       <policy-modal />
 

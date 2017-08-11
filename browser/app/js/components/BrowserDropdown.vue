@@ -65,7 +65,12 @@ export default {
     },
 
     settings: function() {
-      this.$store.state.showSettings = true
+      this.$store.commit('setModalStatus', {
+        modal: 'settings',
+        status: {
+          show: true
+        }
+      })
     },
 
     fullscreen: function() {

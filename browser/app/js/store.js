@@ -53,12 +53,6 @@ export const store = new Vuex.Store({
     latestUiVersion: currentUiVersion,
     sideBarActive: false,
     loginRedirectPath: minioBrowserPrefix,
-    settings: {
-      accessKey: '',
-      secretKey: '',
-      secretKeyVisible: false
-    },
-    showSettings: false,
     policies: [],
     showDeleteConfirmation: false,
     shareObject: {
@@ -77,6 +71,9 @@ export const store = new Vuex.Store({
         show: false
       },
       about: {
+        show: false
+      },
+      settings: {
         show: false
       }
     }
