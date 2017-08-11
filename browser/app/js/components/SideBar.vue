@@ -42,6 +42,10 @@
             {{ bucket.policy }}
           </div>
           <dropdown class="buckets__list__actions">
+            <button slot="dropdown-button" id="dropdown-bucket-actions" class="dropdown-toggle btn btn-default" type="button">
+              <i class="zmdi zmdi-more-vert"></i>
+            </button>
+
             <li><a @click="showPolicy(bucket.name)">Edit policy</a></li>
             <li><a @click="deleteBucket(bucket.name)">Delete</a></li>
           </dropdown>

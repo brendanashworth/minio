@@ -17,6 +17,9 @@
 <template>
   <nav class="top-links">
     <dropdown right id="dropdown-top-links">
+      <button slot="dropdown-button" class="dropdown-toggle btn btn-default">
+        <i class="zmdi zmdi-more-vert"></i>
+      </button>
       <ul class="dropdown-menu dropdown-menu-right" slot="dropdown-menu">
         <li>
           <a v-on:click="about">About <i class="zmdi zmdi-info" /></a>
