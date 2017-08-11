@@ -84,7 +84,7 @@ export default {
       })
         .then(() => {
           this.$store.commit('addPolicy', {
-            prefix: prefix + '*',
+            prefix,
             policy
           })
 

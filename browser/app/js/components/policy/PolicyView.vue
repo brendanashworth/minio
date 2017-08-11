@@ -17,7 +17,7 @@
 <template>
   <div class="policy__list">
     <div class="policy__item">
-      {{ newPrefix }}
+      {{ readablePrefix }}
     </div>
     <div class="policy__item">
       <select disabled :value="newPolicy">
@@ -55,14 +55,9 @@ export default {
   },
 
   computed: {
-    newPrefix: function() {
-      let newPrefix = this.prefix.replace(this.bucket + '/', '')
-      newPrefix = newPrefix.replace('*', '')
-
-      if (!newPrefix)
-        newPrefix = '*'
-
-      return newPrefix
+    // readablePrefix is a way of showing the user their created prefixes
+    readablePrefix: function() {
+      return this.prefix.replace(this.bucket + '/', '')
     },
 
     constants: function() {
@@ -74,23 +69,17 @@ export default {
 
   methods: {
     removePolicy: function(e) {
-      let newPrefix = this.prefix.replace(this.bucket + '/', '')
-      newPrefix = newPrefix.replace('*', '')
+      const web = this.$store.state.web
 
       web.SetBucketPolicy({
         bucketName: this.bucket,
-        prefix: newPrefix,
+        prefix: this.prefix,
         policy: 'none'
       })
         .then(() => {
-          this.$store.commit('removePolicy', { prefix: newPrefix })
+          this.$store.commit('removePolicy', { prefix: this.prefix })
         })
-        .catch(e => function() {
-          this.$store.commit('setAlert', {
-            type: 'danger',
-            message: e.message
-          })
-        })
+        .catch(e => this.$store.dispatch('error', e))
     },
   }
 }
