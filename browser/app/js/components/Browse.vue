@@ -77,28 +77,27 @@
 
       <upload-modal />
 
-      <!--
-      <Dropdown v-if="isLoggedIn" dropup class="create-new" id="dropdown-create-new">
-        <Dropdown.Toggle noCaret class="create-new__toggle">
+      <dropdown v-if="isLoggedIn" dropup class="create-new">
+        <button slot="dropdown-button" class="dropdown-toggle btn btn-default create-new__toggle">
           <i class="zmdi zmdi-plus"></i>
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          <OverlayTrigger placement="top" overlay={ tooltips.uploadFile }>
+        </button>
+        <ul slot="dropdown-menu" class="dropdown-menu">
+          <tooltip placement="top" content="Upload File">
             <a href="#" class="create-new__btn create-new__btn--upload">
-              <input type="file" onChange={ this.uploadFile.bind(this) } id="object-upload-input" />
+              <input type="file" @change="uploadFile" id="object-upload-input" />
               <label htmlFor="object-upload-input"> </label>
             </a>
-          </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={ tooltips.createBucket }>
+          </tooltip>
+          <tooltip placement="top" content="Make Bucket">
             <a href="#" class="create-new__btn create-new__btn--bucket" v-on:click="showMakeBucketModal"></a>
-          </OverlayTrigger>
-          <OverlayTrigger placement="top" overlay={ tooltips.uploadFolder }>
+          </tooltip>
+          <tooltip placement="top" content="Upload Folder">
             <a href="#" class="create-new__btn create-new__btn--folder"></a>
-          </OverlayTrigger>
-        </Dropdown.Menu>
-      </Dropdown>
+          </tooltip>
+        </ul>
+      </dropdown>
 
-      <Modal class="create-bucket"
+      <!--<Modal class="create-bucket"
         bsSize="small"
         animation={ false }
         show={ showMakeBucketModal }
@@ -147,7 +146,7 @@
 <script>
 import storage from 'local-storage-fallback'
 
-import { alert } from 'vue-strap'
+import { alert, dropdown, tooltip } from 'vue-strap'
 
 import Path from './Path.vue'
 import BrowserDropdown from './BrowserDropdown.vue'
@@ -182,6 +181,8 @@ export default {
 
   components: {
     'alert': alert,
+    'dropdown': dropdown,
+    'tooltip': tooltip,
     'breadcrumb-path': Path,
     'browser-dropdown': BrowserDropdown,
     'object-preview': Preview,
@@ -408,17 +409,7 @@ export default {
 
     renderold: function() {
       // TODO
-      /*let tooltips = {
-        uploadFile: <Tooltip id="tooltip-upload-file">
-                      Upload File
-                    </Tooltip>,
-        createBucket: <Tooltip id="tooltip-create-bucket">
-                        Create Bucket
-                      </Tooltip>,
-        uploadFolder: <Tooltip id="tooltip-upload-folder">
-                        Upload Folder
-                      </Tooltip>,
-      }
+      /*
       } else {
         if (prefixWritable)
           createButton = <Dropdown dropup class="create-new" id="dropdown-create-new">
