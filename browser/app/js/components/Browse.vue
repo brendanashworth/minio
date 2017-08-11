@@ -77,7 +77,7 @@
 
       <upload-modal />
 
-      <dropdown v-if="isLoggedIn" dropup class="create-new">
+      <dropdown v-if="isLoggedIn" class="create-new dropup">
         <button slot="dropdown-button" class="dropdown-toggle btn btn-default create-new__toggle">
           <i class="zmdi zmdi-plus"></i>
         </button>
