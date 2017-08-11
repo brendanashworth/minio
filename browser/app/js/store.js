@@ -36,17 +36,12 @@ export const store = new Vuex.Store({
     serverInfo: {},
     currentBucket: '',
     currentPath: '',
-    showMakeBucketModal: false,
     uploads: {},
     alert: {
       show: false,
       type: 'danger',
       message: ''
     },
-    loginError: false,
-    sortNameOrder: false,
-    sortSizeOrder: false,
-    sortDateOrder: false,
     latestUiVersion: currentUiVersion,
     sideBarActive: false,
     loginRedirectPath: minioBrowserPrefix,
