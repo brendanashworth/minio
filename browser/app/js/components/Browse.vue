@@ -102,10 +102,7 @@
 
       <policy-modal />
 
-      <confirm-delete-modal ref="delete_modal"
-        v-if="showDeleteConfirmation"
-        :objects="checkedObjects"
-        @ok="deleteObjects" />
+      <confirm-delete-modal />
 
       <div class="sidebar-backdrop" v-bind:class="{ 'sidebar-backdrop--toggled': sideBarActive }" v-on:click="hideSidebar" />
     </section>
@@ -183,9 +180,7 @@ export default {
 
     policies: state => state.policies,
 
-    currentBucket: state => state.currentBucket,
-
-    showDeleteConfirmation: state => state.showDeleteConfirmation
+    currentBucket: state => state.currentBucket
   })),
 
   methods: {
@@ -232,38 +227,13 @@ export default {
       dispatch(actions.uploadFile(file, this.xhr))
     },
 
-    deleteObjects: function() {
-      const {web, currentPath, currentBucket, deleteConfirmation, checkedObjects} = this.$store.state
-
-      let objects = []
-      if (checkedObjects.length > 0) {
-        objects = checkedObjects.map(obj => `${currentPath}${obj}`)
-      } else {
-        objects = [deleteConfirmation.object]
-      }
-
-      web.RemoveObject({
-        bucketname: currentBucket,
-        objects: objects
-      })
-        .then(() => {
-          for (let object of objects) {
-            let name = object.replace(currentPath, '')
-
-            this.$store.commit('removeObject', name)
-          }
-        })
-        .catch(err => this.$store.dispatch('error', err))
-    },
-
     promptDeleteObjects: function() {
-      this.$store.state.showDeleteConfirmation = true
-    },
-
-    hideAlert: function(e) {
-      e.preventDefault()
-      const {dispatch} = this.props
-      dispatch(actions.hideAlert())
+      this.$store.commit('setModalStatus', {
+        modal: 'delete',
+        status: {
+          show: true
+        }
+      })
     },
 
     shareObject: function(e, object) {

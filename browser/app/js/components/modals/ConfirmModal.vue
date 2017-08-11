@@ -15,16 +15,21 @@
  !-->
 
 <template>
-  <modal bsSize="small" ok-text={{ okText }} cancel-text={{ cancelText }}
-    @callback="okHandler" class="modal--confirm">
+  <modal :small="true" :value="value" @ok="ok" @cancel="cancel" class="modal--confirm">
+
     <div class="modal--confirm__icon">
-      <i class="zmdi" v-bind:class="{ icon }" />
+      <i class="zmdi" :class="icon" />
     </div>
     <div class="modal--confirm__text">
       {{ text }}
     </div>
     <div class="modal--confirm__sub">
       {{ sub }}
+    </div>
+
+    <div slot="modal-footer" class="modal-footer text-center">
+      <button class="btn btn--link" @click="ok">{{ okText }}</button>
+      <button class="btn btn--link" @click="cancel">{{ cancelText }}</button>
     </div>
   </modal>
 </template>
@@ -37,14 +42,18 @@ import { modal } from 'vue-strap'
 export default {
   name: 'ConfirmModal',
 
-  props: ['cancelText', 'okText', 'sub', 'text', 'icon'],
+  props: ['cancelText', 'okText', 'sub', 'text', 'icon', 'value'],
 
   components: {
     'modal': modal
   },
 
   methods: {
-    okHandler: function() {
+    cancel: function() {
+      this.$emit('cancel')
+    },
+
+    ok: function() {
       this.$emit('ok')
     }
   }

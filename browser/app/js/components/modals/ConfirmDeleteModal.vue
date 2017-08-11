@@ -15,7 +15,8 @@
  !-->
 
 <template>
-  <confirm-modal @ok="okHandler"
+  <confirm-modal @ok="deleteObjects" @cancel="hide"
+    :value="show"
     icon="zmdi-alert-polygon c-red"
     sub="This cannot be undone!"
     :text="confirmText"
@@ -24,6 +25,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import ConfirmModal from './ConfirmModal.vue'
 
 export default {
@@ -33,23 +36,62 @@ export default {
     'confirm-modal': ConfirmModal
   },
 
-  props: ['objects'],
-
-  computed: {
+  computed: Object.assign(mapState({
+    show: state => state.modals.delete.show
+  }), {
     confirmText: function() {
-      let files = this.objects.length + ' file'
+      return `Are you sure you want to delete ${this.prettyObjects}?`
+    },
 
-      // Ah, plurals.
-      if (this.objects.length > 1)
-        files += 's'
+    prettyObjects: function() {
+      const objects = this.$store.state.checkedObjects
 
-      return `Are you sure you want to delete ${files}?`
+      // Either "filename" for 1 or 'x files' for multiple.
+      return objects.length > 1 ? objects.length + ' files' : `"${objects[0]}"`
     }
-  },
+  }),
 
   methods: {
-    okHandler: function() {
-      this.$emit('ok')
+    deleteObjects: function() {
+      this.hide()
+
+      const store = this.$store
+      const {web, currentPath, currentBucket, deleteConfirmation, checkedObjects} = store.state
+
+      let objects = checkedObjects.map(obj => `${currentPath}${obj}`)
+
+      // This should never happen, but we had a case for it before, so make sure.
+      if (!objects)
+        return store.dispatch('error', {
+          message: 'No objects are selected to delete!'
+        })
+
+      web.RemoveObject({
+        bucketname: currentBucket,
+        objects: objects
+      })
+        .then(() => {
+          store.dispatch('showAlert', {
+            type: 'success',
+            message: `Successfully deleted ${this.prettyObjects}.`
+          })
+
+          for (let object of objects) {
+            let name = object.replace(currentPath, '')
+
+            store.dispatch('removeObject', name)
+          }
+        })
+        .catch(err => store.dispatch('error', err))
+    },
+
+    hide: function() {
+      this.$store.commit('setModalStatus', {
+        modal: 'delete',
+        status: {
+          show: false
+        }
+      })
     }
   }
 }

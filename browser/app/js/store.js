@@ -54,7 +54,6 @@ export const store = new Vuex.Store({
     sideBarActive: false,
     loginRedirectPath: minioBrowserPrefix,
     policies: [],
-    showDeleteConfirmation: false,
     shareObject: {
       url: '',
       object: ''
@@ -77,6 +76,9 @@ export const store = new Vuex.Store({
         show: false
       },
       'make-bucket': {
+        show: false
+      },
+      delete: {
         show: false
       }
     }
@@ -169,11 +171,7 @@ export const store = new Vuex.Store({
 
     // Remove a single object from the object list.
     removeObject(state, object) {
-      let index = state.objects.indexOf(object)
-
-      state.objects = state.objects.filter((e, i) => i != index)
-
-      this.commit('removeCheckedObject', object)
+      state.objects = state.objects.filter(obj => obj.name != object.name)
     },
 
     // Add a checked object.
@@ -268,6 +266,13 @@ export const store = new Vuex.Store({
         show: true,
         alertTimeout
       }, alert))
+    },
+
+    // Remove an object from the checked objects list and the regular objects
+    // list. This should always be used instead of the mutations.
+    removeObject(context, objectName) {
+      context.commit('removeObject', { name: objectName })
+      context.commit('removeCheckedObject', objectName)
     },
 
     uploadFile(file, xhr) {
