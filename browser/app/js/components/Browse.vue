@@ -38,35 +38,7 @@
 
       <side-bar />
 
-      <div class="objects">
-        <header class="objects__row" data-type="folder">
-          <div class="objects__item objects__item--name" v-on:click="sortObjectsByName" data-sort="name">
-            Name
-            <i class="objects__item__sort zmdi" v-bind:class="{ 'zmdi-sort-desc': sortNameOrder, 'zmdi-sort-asc': !sortNameOrder }" />
-          </div>
-          <div class="objects__item objects__item--size" v-on:click="sortObjectsBySize" data-sort="size">
-            Size
-            <i class="objects__item__sort zmdi" v-bind:class="{ 'zmdi-sort-amount-desc': sortSizeOrder, 'zmdi-sort-amount-asc': !sortSizeOrder }" />
-          </div>
-          <div class="objects__item objects__item--modified" v-on:click="sortObjectsByDate" data-sort="last-modified">
-            Last Modified
-            <i class="objects__item__sort zmdi" v-bind:class="{ 'zmdi-sort-amount-desc': sortDateOrder, 'zmdi-sort-amount-asc': !sortDateOrder }" />
-          </div>
-        </header>
-        <div class="objects__container">
-          <!--<Dropzone>-
-            <InfiniteScroll loadMore={ this.listObjects.bind(this) }
-              hasMore={ istruncated }
-              useWindow={ true }
-              initialLoad={ false }>-->
-              <objects-list />
-            <!--</InfiniteScroll>
-            <div class="text-center" style={ { display: (istruncated && currentBucket) ? 'block' : 'none' } }>
-              <span>Loading...</span>
-            </div>
-          <!-</Dropzone>-->
-        </div>
-      </div>
+      <objects-list />
 
       <object-preview />
 
@@ -104,7 +76,7 @@
 
       <confirm-delete-modal />
 
-      <div class="sidebar-backdrop" v-bind:class="{ 'sidebar-backdrop--toggled': sideBarActive }" v-on:click="hideSidebar" />
+      <div class="sidebar-backdrop" v-bind:class="{ 'sidebar-backdrop--toggled': sideBarActive }" v-on:click="toggleSidebar" />
     </section>
   </section>
 </template>
@@ -174,10 +146,6 @@ export default {
 
     sideBarActive: state => state.sideBarActive,
 
-    sortNameOrder: state => state.sortNameOrder,
-    sortSizeOrder: state => state.sortSizeOrder,
-    sortDateOrder: state => state.sortDateOrder,
-
     policies: state => state.policies,
 
     currentBucket: state => state.currentBucket
@@ -196,18 +164,6 @@ export default {
     listObjects: function() {
       const {dispatch} = this.props
       dispatch(actions.listObjects())
-    },
-
-    showBucketPolicy: function(e) {
-      e.preventDefault()
-      const {dispatch} = this.props
-      dispatch(actions.showBucketPolicy())
-    },
-
-    hideBucketPolicy: function(e) {
-      e.preventDefault()
-      const {dispatch} = this.props
-      dispatch(actions.hideBucketPolicy())
     },
 
     uploadFile: function(e) {
@@ -248,43 +204,10 @@ export default {
       dispatch(actions.hideShareObject())
     },
 
-    sortObjectsByName: function(e) {
-      const {dispatch, objects, sortNameOrder} = this.props
-      dispatch(actions.setObjects(utils.sortObjectsByName(objects, !sortNameOrder)))
-      dispatch(actions.setSortNameOrder(!sortNameOrder))
-    },
-
-    sortObjectsBySize: function() {
-      const {dispatch, objects, sortSizeOrder} = this.props
-      dispatch(actions.setObjects(utils.sortObjectsBySize(objects, !sortSizeOrder)))
-      dispatch(actions.setSortSizeOrder(!sortSizeOrder))
-    },
-
-    sortObjectsByDate: function() {
-      const {dispatch, objects, sortDateOrder} = this.props
-      dispatch(actions.setObjects(utils.sortObjectsByDate(objects, !sortDateOrder)))
-      dispatch(actions.setSortDateOrder(!sortDateOrder))
-    },
-
     toggleSidebar: function() {
       const old = this.$store.state.sideBarActive
 
       this.$store.state.sideBarActive = !old
-    },
-
-    hideSidebar: function(event) {
-      // TODO
-      let e = event || window.event;
-
-      // Support all browsers.
-      let target = e.srcElement || e.target;
-      if (target.nodeType === 3) // Safari support.
-        target = target.parentNode;
-
-      let targetID = target.id;
-      if (!(targetID === 'feh-trigger')) {
-        this.props.dispatch(actions.setSidebarStatus(false))
-      }
     },
 
     showMessage: function() {

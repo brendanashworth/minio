@@ -15,29 +15,55 @@
  !-->
 
 <template>
-  <div>
-    <div v-for="object in objects" class="objects__row" v-bind:class="{ 'objects__row--folder': object.isFolder, 'objects__row-selected': object.isChecked }" v-on:click="preview(object.name)">
-      <div class="objects__item objects__item--select" :data-object-type="object.type">
-        <div class="checkbox">
-          <input type="checkbox"
-            :name="object.name"
-            :checked="object.isChecked"
-            v-on:change="checkObject(object.name)" />
-          <i class="checkbox__helper" />
+  <div class="objects">
+    <header class="objects__row" data-type="folder">
+      <div class="objects__item objects__item--name" v-on:click="sort('name')" data-sort="name">
+        Name
+        <i class="objects__item__sort zmdi" v-bind:class="{ 'zmdi-sort-desc': sortColumn == 'name', 'zmdi-sort-asc': reverse }" />
+      </div>
+      <div class="objects__item objects__item--size" v-on:click="sort('size')" data-sort="size">
+        Size
+        <i class="objects__item__sort zmdi" v-bind:class="{ 'zmdi-sort-amount-desc': sortColumn == 'size', 'zmdi-sort-amount-asc': reverse }" />
+      </div>
+      <div class="objects__item objects__item--modified" v-on:click="sort('date')" data-sort="last-modified">
+        Last Modified
+        <i class="objects__item__sort zmdi" v-bind:class="{ 'zmdi-sort-amount-desc': sortColumn == 'date', 'zmdi-sort-amount-asc': reverse }" />
+      </div>
+    </header>
+    <!--</InfiniteScroll>
+      <div class="text-center" style={ { display: (istruncated && currentBucket) ? 'block' : 'none' } }>
+        <span>Loading...</span>
+      </div>
+    <!-</Dropzone>-->
+    <div class="objects__container">
+      <div v-for="object in objects" class="objects__row" v-bind:class="{ 'objects__row--folder': object.isFolder, 'objects__row-selected': object.isChecked }" v-on:click="preview(object.name)">
+        <div class="objects__item objects__item--select" :data-object-type="object.type">
+          <div class="checkbox">
+            <input type="checkbox"
+              :name="object.name"
+              :checked="object.isChecked"
+              v-on:change="checkObject(object.name)" />
+            <i class="checkbox__helper" />
+          </div>
+        </div>
+        <div class="objects__item objects__item--name">
+          <a href="#" v-on:click.prevent="selectPrefix(object.path)">
+            {{ object.name }}
+          </a>
+        </div>
+        <div class="objects__item objects__item--size">
+          {{ object.size }}
+        </div>
+        <div class="objects__item objects__item--modified">
+          {{ object.lastModified }}
         </div>
       </div>
-      <div class="objects__item objects__item--name">
-        <a href="#" v-on:click.prevent="selectPrefix(object.path)">
-          {{ object.name }}
-        </a>
-      </div>
-      <div class="objects__item objects__item--size">
-        {{ object.size }}
-      </div>
-      <div class="objects__item objects__item--modified">
-        {{ object.lastModified }}
-      </div>
     </div>
+  <!--<Dropzone>-
+    <InfiniteScroll loadMore={ this.listObjects.bind(this) }
+      hasMore={ istruncated }
+      useWindow={ true }
+      initialLoad={ false }>-->
   </div>
 </template>
 
@@ -46,12 +72,30 @@ import { mapGetters } from 'vuex'
 
 import MaterialDesignIconicFonts from 'material-design-iconic-font/dist/css/material-design-iconic-font.min.css'
 
+import * as utils from '../utils'
+
 export default {
   name: 'ObjectsList',
 
   computed: {
     objects: function() {
-      return this.$store.getters.objects
+      const objects = this.$store.getters.objects
+
+      switch (this.sortColumn) {
+      case 'name':
+        return utils.sortObjectsByName(objects, this.reverse)
+      case 'size':
+        return utils.sortObjectsBySize(objects, this.reverse)
+      case 'date':
+        return utils.sortObjectsByDate(objects, this.reverse)
+      }
+    }
+  },
+
+  data: function() {
+    return {
+      sortColumn: 'name',
+      reverse: false
     }
   },
 
@@ -136,6 +180,14 @@ export default {
           })
         })
         .catch(err => store.dispatch('error', err))
+    },
+
+    sort: function(type) {
+      // If they aren't changing the column, they're reversing the order.
+      if (this.sortColumn == type)
+        this.reverse = !this.reverse
+
+      this.sortColumn = type
     }
   },
 
