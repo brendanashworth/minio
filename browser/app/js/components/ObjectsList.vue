@@ -117,6 +117,12 @@ export default {
         marker: marker
       })
         .then(res => {
+          // There are no objects, empty bucket.
+          if (!res.objects)
+            return this.$store.commit('setObjects', {
+              objects: [], istruncated: false, marker: res.marker
+            })
+
           const objects = res.objects.map(object => {
             object.name = object.name.replace(currentPath, '')
 

@@ -16,12 +16,7 @@
 
 <template>
   <section class="browser__inner">
-  <!-- TODO can only show one alert, then close, cannot reopen, must keep state -->
-    <alert dismissable :type="alert.type" class='animated' v-bind:class="{ fadeInDown: alert.show, fadeOutUp: !alert.show }">
-       <div class='text-center'>
-         {{ alert.message }}
-       </div>
-     </alert>
+    <alert />
 
     <section class='content' v-bind:class="{ 'content--toggled': sideBarActive }">
       <header class="header">
@@ -89,7 +84,7 @@
             </a>
           </tooltip>
           <tooltip placement="top" content="Make Bucket">
-            <a href="#" class="create-new__btn create-new__btn--bucket" v-on:click="showMakeBucketModal"></a>
+            <a href="#" class="create-new__btn create-new__btn--bucket" v-on:click="makeBucket"></a>
           </tooltip>
           <tooltip placement="top" content="Upload Folder">
             <a href="#" class="create-new__btn create-new__btn--folder"></a>
@@ -97,33 +92,7 @@
         </ul>
       </dropdown>
 
-      <!--<Modal class="create-bucket"
-        bsSize="small"
-        animation={ false }
-        show={ showMakeBucketModal }
-        onHide={ this.hideMakeBucketModal.bind(this) }>
-        <ModalBody>
-          <form v-on:submit="makeBucket">
-            <div class="form-group">
-              <label class="form-group__label">
-                Create new bucket
-              </label>
-              <input class="form-group__field"
-                type="text"
-                ref="makeBucketRef"
-                placeholder="e.g documents"
-                autoFocus/>
-              <i class="form-group__bar" />
-            </div>
-            <div class="text-right">
-              <input type="submit" class="btn btn--link" value="Create" />
-              <button class="btn btn--link" v-on:click="hideMakeBucketModal">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </ModalBody>
-      </Modal>-->
+      <make-bucket-modal />
 
       <about-modal />
 
@@ -146,13 +115,14 @@
 <script>
 import storage from 'local-storage-fallback'
 
-import { alert, dropdown, tooltip } from 'vue-strap'
+import { dropdown, tooltip } from 'vue-strap'
 
 import Path from './Path.vue'
 import BrowserDropdown from './BrowserDropdown.vue'
 import Preview from './Preview.vue'
 import ObjectsList from './ObjectsList.vue'
 import SideBar from './SideBar.vue'
+import Alert from './Alert.vue'
 
 import ConfirmDeleteModal from './modals/ConfirmDeleteModal.vue'
 import UploadModal from './modals/UploadModal.vue'
@@ -160,6 +130,7 @@ import SettingsModal from './modals/SettingsModal.vue'
 import AboutModal from './modals/AboutModal.vue'
 import ShareModal from './modals/ShareModal.vue'
 import PolicyModal from './modals/PolicyModal.vue'
+import MakeBucketModal from './modals/MakeBucketModal.vue'
 
 /*import Dropzone from '../components/Dropzone'*/
 
@@ -180,9 +151,9 @@ export default {
   name: 'Browse',
 
   components: {
-    'alert': alert,
     'dropdown': dropdown,
     'tooltip': tooltip,
+    'alert': Alert,
     'breadcrumb-path': Path,
     'browser-dropdown': BrowserDropdown,
     'object-preview': Preview,
@@ -193,7 +164,8 @@ export default {
     'settings-modal': SettingsModal,
     'about-modal': AboutModal,
     'share-modal': ShareModal,
-    'policy-modal': PolicyModal
+    'policy-modal': PolicyModal,
+    'make-bucket-modal': MakeBucketModal
   },
 
   computed: Object.assign({
@@ -201,8 +173,6 @@ export default {
       return this.$store.getters.isLoggedIn
     },
   }, mapState({
-    alert: state => state.alert,
-
     checkedObjects: state => state.checkedObjects,
 
     sideBarActive: state => state.sideBarActive,
@@ -219,41 +189,18 @@ export default {
   })),
 
   methods: {
-    componentWillUnmount: function() {
-      this.history()
+    makeBucket: function() {
+      this.$store.commit('setModalStatus', {
+        modal: 'make-bucket',
+        status: {
+          show: true
+        }
+      })
     },
 
     listObjects: function() {
       const {dispatch} = this.props
       dispatch(actions.listObjects())
-    },
-
-    makeBucket: function() {
-      const bucketName = this.$refs.makeBucketRef.value
-      this.$refs.makeBucketRef.value = ''
-
-      const web = this.$store.state.web
-
-      this.hideMakeBucketModal()
-
-      web.MakeBucket({
-        bucketName
-      })
-        .then(() => {
-          this.$store.state.commit('addBucket', bucketName)
-        })
-        .catch(err => this.$store.state.dispatch('error', err))
-    },
-
-    hideMakeBucketModal: function() {
-      const {dispatch} = this.props
-      dispatch(actions.hideMakeBucketModal())
-    },
-
-    showMakeBucketModal: function(e) {
-      e.preventDefault()
-      const {dispatch} = this.props
-      dispatch(actions.showMakeBucketModal())
     },
 
     showBucketPolicy: function(e) {

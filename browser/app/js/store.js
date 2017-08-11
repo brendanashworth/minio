@@ -75,6 +75,9 @@ export const store = new Vuex.Store({
       },
       settings: {
         show: false
+      },
+      'make-bucket': {
+        show: false
       }
     }
   },

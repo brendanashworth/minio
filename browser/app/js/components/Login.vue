@@ -16,11 +16,7 @@
 
 <template>
   <section class="login">
-    <alert dismissable class="animated" :value="currentAlert.show" v-bind:class="{ fadeInDown: currentAlert.show }" v-on:click="hideAlert" :type="currentAlert.type">
-      <div class='text-center'>
-        {{ currentAlert.message }}
-      </div>
-    </alert>
+    <alert />
 
     <div class="login__content">
       <form class="login__form" v-on:submit.prevent="submit">
@@ -51,13 +47,13 @@
 </template>
 
 <script>
-import { alert } from 'vue-strap'
+import Alert from './Alert.vue'
 
 import { minioBrowserPrefix } from '../constants'
 
 export default {
   components: {
-    'alert': alert
+    'alert': Alert
   },
 
   data: function() {
@@ -66,19 +62,7 @@ export default {
     }
   },
 
-  computed: {
-    currentAlert() {
-      return this.$store.state.alert
-    }
-  },
-
   methods: {
-    hideAlert: function() {
-      // TODO the alert handles alert dismissing incorrectly, will mutate state directly.
-      // it should let us do it.
-      this.$store.commit('setAlert', null)
-    },
-
     submit: function() {
       const store = this.$store
 
