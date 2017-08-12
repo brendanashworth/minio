@@ -45,6 +45,7 @@
 
 <script>
 import filesize from 'file-size'
+import { mapState } from 'vuex'
 
 import ConfirmModal from './ConfirmModal.vue'
 

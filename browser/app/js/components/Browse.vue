@@ -160,20 +160,10 @@ export default {
     },
 
     uploadFile: function(e) {
-      e.preventDefault()
-      const {dispatch, buckets} = this.props
-
-      if (buckets.length === 0) {
-        dispatch(actions.showAlert({
-          type: 'danger',
-          message: "Bucket needs to be created before trying to upload files."
-        }))
-        return
-      }
       let file = e.target.files[0]
       e.target.value = null
-      this.xhr = new XMLHttpRequest()
-      dispatch(actions.uploadFile(file, this.xhr))
+
+      this.$store.dispatch('uploadFile', {file, xhr: new XMLHttpRequest()})
     },
 
     promptDeleteObjects: function() {

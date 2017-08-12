@@ -267,8 +267,60 @@ export const store = new Vuex.Store({
       context.commit('removeCheckedObject', objectName)
     },
 
-    uploadFile(file, xhr) {
-      // TODO implement
+    uploadFile(context, {file, xhr}) {
+      // TODO implement. Also this probably doesn't belong in the app store.
+      const {currentBucket, currentPath} = context.state
+
+      const objectName = `${currentPath}${file.name}`
+      const uploadUrl = `${window.location.origin}/minio/upload/${currentBucket}/${objectName}`
+      // The slug is a unique identifer for the file upload.
+      const slug = `${currentBucket}-${currentPath}-${file.name}`
+
+      xhr.open('PUT', uploadUrl, true)
+      xhr.withCredentials = false
+      xhr.setRequestHeader("Authorization", 'Bearer ' + storage.getItem('token'))
+      xhr.setRequestHeader('x-amz-date', Moment().utc().format('YYYYMMDDTHHmmss') + 'Z')
+
+      context.commit('addUpload', {slug, xhr, size: file.size, name: file.name})
+
+      xhr.onload = function(event) {
+        if (xhr.status == 200) {
+          context.dispatch('showAlert', {
+            type: 'success',
+            message: `File '${file.name}' uploaded successfully.`
+          })
+
+          context.commit('removeUpload', slug)
+        } else if (xhr.status == 401 || xhr.status == 403 || xhr.status == 500) {
+          context.dispatch('error', {
+            message: 'Unauthorized request.'
+          })
+
+          context.commit('removeUpload', slug)
+        }
+      }
+
+      xhr.upload.addEventListener('error', () => {
+        context.dispatch('error', {
+          message: `Error occurred uploading '${file.name}'.`
+        })
+
+        context.commit('removeUpload', slug)
+      })
+
+      xhr.upload.addEventListener('progress', event => {
+        if (event.lengthComputable) {
+          let loaded = event.loaded
+          let total = event.total
+
+          // Update the counter.
+          context.commit('setUploadProgress', {
+            slug, loaded
+          })
+        }
+      })
+
+      xhr.send(file)
     },
 
     shareObject: function(object, days, hours, minutes) {
@@ -359,73 +411,4 @@ export const downloadSelected = (url, req, xhr) => {
     xhr.send(JSON.stringify(req));
   }
 }
-
-export const uploadFile = (file, xhr) => {
-  return (dispatch, getState) => {
-    const {currentBucket, currentPath} = getState()
-    const objectName = `${currentPath}${file.name}`
-    const uploadUrl = `${window.location.origin}/minio/upload/${currentBucket}/${objectName}`
-    // The slug is a unique identifer for the file upload.
-    const slug = `${currentBucket}-${currentPath}-${file.name}`
-
-    xhr.open('PUT', uploadUrl, true)
-    xhr.withCredentials = false
-    const token = storage.getItem('token')
-    if (token) xhr.setRequestHeader("Authorization", 'Bearer ' + storage.getItem('token'))
-    xhr.setRequestHeader('x-amz-date', Moment().utc().format('YYYYMMDDTHHmmss') + 'Z')
-    dispatch(addUpload({
-      slug,
-      xhr,
-      size: file.size,
-      name: file.name
-    }))
-
-    xhr.onload = function(event) {
-      if (xhr.status == 401 || xhr.status == 403 || xhr.status == 500) {
-        setShowAbortModal(false)
-        dispatch(stopUpload({
-          slug
-        }))
-        dispatch(showAlert({
-          type: 'danger',
-          message: 'Unauthorized request.'
-        }))
-      }
-      if (xhr.status == 200) {
-        setShowAbortModal(false)
-        dispatch(stopUpload({
-          slug
-        }))
-        dispatch(showAlert({
-          type: 'success',
-          message: 'File \'' + file.name + '\' uploaded successfully.'
-        }))
-        dispatch(selectPrefix(currentPath))
-      }
-    }
-
-    xhr.upload.addEventListener('error', event => {
-      dispatch(showAlert({
-        type: 'danger',
-        message: 'Error occurred uploading \'' + file.name + '\'.'
-      }))
-      dispatch(stopUpload({
-        slug
-      }))
-    })
-
-    xhr.upload.addEventListener('progress', event => {
-      if (event.lengthComputable) {
-        let loaded = event.loaded
-        let total = event.total
-
-        // Update the counter.
-        dispatch(uploadProgress({
-          slug,
-          loaded
-        }))
-      }
-    })
-    xhr.send(file)
-  }
 }*/
